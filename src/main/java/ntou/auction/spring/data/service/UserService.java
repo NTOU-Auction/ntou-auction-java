@@ -15,6 +15,8 @@ public class UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+
+
     public UserService(UserRepository repository,  PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
@@ -62,6 +64,10 @@ public class UserService {
 
     public boolean isEmailNonExist(String email) {
         return repository.findAllByEmail(email).isEmpty();
+    }
+
+    public User findByUsername(String userName){
+        return repository.findByUsername(userName);
     }
 
 }
