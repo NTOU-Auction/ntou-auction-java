@@ -74,8 +74,9 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/log-in").permitAll()
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/account/users/**").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole(String.valueOf(Role.ADMIN))
+                        .requestMatchers(HttpMethod.GET, "/api/v1/account/users").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/account/users").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/account/users/**").hasRole(String.valueOf(Role.ADMIN))
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((session) -> session
