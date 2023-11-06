@@ -7,3 +7,9 @@ insert into user_roles (user_id, roles)
 values ('1', 'USER');
 insert into user_roles (user_id, roles)
 values ('1', 'ADMIN');
+
+insert into product (version,id,product_name, price,is_fixed_price,product_description,product_scale,product_image)
+values (1,'1','Action-figure', 10000,true,'ggggg','kkkk',null);
+
+insert into product (version,id,product_name, price,is_fixed_price,product_description,product_scale,product_image)
+values (2,'2','Action-figure', 10000,true,'ggggg','kkkkk',null);
