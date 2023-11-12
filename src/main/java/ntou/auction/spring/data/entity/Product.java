@@ -19,6 +19,10 @@ public class Product extends AbstractEntity {
     private String productName;
 
     @NotNull
+    @Length(min = 1, max = 32)
+    private String productType;
+
+    @NotNull
     private Long price;
 
     @NotNull
@@ -29,8 +33,18 @@ public class Product extends AbstractEntity {
     private String productDescription;
 
     @NotNull
-    @Length(min = 1, max = 256)
-    private String productScale;
+    @Length(min = 1, max = 32)
+    private String seller;
+
+    //followings are non-isFixedPrice feature
+
+    @NotNull
+    private Long upsetPrice; //lowest requested price
+
+
+    private Long currentPrice;
+
+
 
     // if avatar is more than 5MB, need to modify column length
     @Lob
