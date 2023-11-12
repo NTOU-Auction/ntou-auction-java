@@ -22,7 +22,7 @@ public class ProductController {
 
     @GetMapping("/products/{productName}")
     @ResponseBody
-    Product getProductByProductName(@PathVariable String productName) {
+    List<Product> getProductByProductName(@PathVariable String productName) {
         return productService.findByProductName(productName);
     }
 

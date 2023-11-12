@@ -57,8 +57,8 @@ public class ProductService {
         return repository.findAllByEmail(email).isEmpty();
     }
 */
-    public Product findByProductName(String productName) {
-        return repository.findByProductName(productName);
+    public List<Product> findByProductName(String productName) {
+        return repository.findAllByFuzzyProductName(productName);
     }
 
 }

@@ -19,8 +19,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
     Product findById(long id);
 
     @Query("select p from Product p " +
-            "where p.productName like  :productName") //string-like
-    List<User> findAllByProductName(@Param("productName") String productName);
-
-
+            "where p.productName like %?1%") //string-like
+    List<Product> findAllByFuzzyProductName(@Param("productName") String productName);
+    // ?1:productName
 }
