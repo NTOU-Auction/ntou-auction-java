@@ -1,6 +1,7 @@
 package ntou.auction.spring.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.NotBlank;
 import ntou.auction.spring.data.Role;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -30,7 +31,7 @@ import java.util.Set;
 @Table(name = "user")
 public class User extends AbstractEntity implements UserDetails {
 
-    @NotNull
+    @NotBlank
     @Length(min = 1, max = 32)
     @Column(unique = true)
     private String username;
@@ -39,7 +40,7 @@ public class User extends AbstractEntity implements UserDetails {
     @Length(min = 1, max = 32)
     private String name;
 
-    @NotNull
+    @NotBlank
     @JsonIgnore
     private String hashedPassword;
 
@@ -55,7 +56,7 @@ public class User extends AbstractEntity implements UserDetails {
 
     private String avatarImageName;
 
-    @NotNull
+    @NotBlank
     @Email
     @Column(unique = true)
     private String email;
