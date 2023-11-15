@@ -6,7 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 public class ProductService {
@@ -48,17 +48,18 @@ public class ProductService {
         repository.save(product);
     }
 
-
+/*
     public boolean isProductNameNonExist(String productName) {
         return repository.findByProductName(productName) == null;
     }
-/*
-    public boolean isEmailNonExist(String email) {
-        return repository.findAllByEmail(email).isEmpty();
-    }
 */
+
     public List<Product> findByProductName(String productName) {
         return repository.findAllByFuzzyProductName(productName);
+    }
+
+    public List<Product> findByProductClassification(String productType){
+        return repository.findByProductType(productType);
     }
 
 }
