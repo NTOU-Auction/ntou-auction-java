@@ -12,4 +12,7 @@ insert into product (version,id,product_name,product_type, price,is_fixed_price,
 values (1,'1','Action-figure','electronic',10000,true,'ggggg',null,'weichun',1000,1500);
 
 insert into product (version,id,product_name,product_type, price,is_fixed_price,product_description,product_image,seller,upset_price,current_price)
-values (2,'2','Tissue','daily need', 10000,true,'ggggg',null,'weichun',1000,1500);
+values (2,'2','衛生紙','daily need', 10000,true,'ggggg',null,'weichun',1000,1500);
+
+insert into product (version,id,product_name,product_type, price,is_fixed_price,product_description,product_image,seller,upset_price,current_price)
+values (3,'3','action figure','electronic',10000,true,'ggggg',null,'weichun',1000,1500);
