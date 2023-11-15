@@ -34,14 +34,26 @@ public class AuthController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<String> signUp(@Valid @RequestBody SignupRequest request, Errors errors) {
-        String response = "Success";
+    public ResponseEntity<Map<String, String>> signUp(@Valid @RequestBody SignupRequest request, Errors errors) {
+        String successMessage = "Success";
+        String usernameDuplicatedMessage = "輸入的帳號已被其他人使用，請使用別的帳號註冊!";
+        String emailDuplicatedMessage = "輸入的電子信箱已被其他人使用，請使用別的信箱註冊!";
+        String emailAndUsernameDuplicatedMessage = "輸入的帳號及電子信箱皆已被其他人使用，請重新註冊!";
+        String passwordMessage = "至少需要8位密碼，且不超過128位";
+        Map<String, String> successResponse = Collections.singletonMap("message", successMessage);
+        Map<String, String> usernameDuplicatedResponse = Collections.singletonMap("message", usernameDuplicatedMessage);
+        Map<String, String> emailDuplicatedResponse = Collections.singletonMap("message", emailDuplicatedMessage);
+        Map<String, String> emailAndUsernameDuplicatedResponse = Collections.singletonMap("message", emailAndUsernameDuplicatedMessage);
+        Map<String, String> passwordResponse = Collections.singletonMap("message", passwordMessage);
         User newUser = new User();
         HashSet<Role> roles = new HashSet<>();
         roles.add(Role.USER);
         newUser.setEmail(request.getEmail());
         newUser.setUsername(request.getUsername());
         newUser.setName(request.getName());
+        if(request.getPassword().length() < 8 || request.getPassword().length() > 128){
+            return ResponseEntity.badRequest().body(passwordResponse);
+        }
         newUser.setHashedPassword(userService.getPasswordEncoder().encode(request.getPassword()));
         newUser.setRoles(roles);
         newUser.setEnabled(true);
@@ -49,13 +61,16 @@ public class AuthController {
         newUser.setAccountNonLocked(true);
         newUser.setCredentialsNonExpired(true);
         if(!userService.isUsernameNonExist(request.getUsername())){
-            return ResponseEntity.badRequest().body("Username duplicated");
+            if(!userService.isEmailNonExist(request.getEmail())){
+                return ResponseEntity.badRequest().body(emailAndUsernameDuplicatedResponse);
+            }
+            return ResponseEntity.badRequest().body(usernameDuplicatedResponse);
         }
         if(!userService.isEmailNonExist(request.getEmail())){
-            return ResponseEntity.badRequest().body("Email duplicated");
+            return ResponseEntity.badRequest().body(emailDuplicatedResponse);
         }
         userService.store(newUser);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(successResponse);
     }
 
 }
