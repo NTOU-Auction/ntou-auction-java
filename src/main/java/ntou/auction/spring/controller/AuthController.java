@@ -9,7 +9,6 @@ import ntou.auction.spring.security.JWTService;
 import ntou.auction.spring.security.SignupRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -34,7 +33,7 @@ public class AuthController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<Map<String, String>> signUp(@Valid @RequestBody SignupRequest request, Errors errors) {
+    public ResponseEntity<Map<String, String>> signUp(@Valid @RequestBody SignupRequest request) {
         String successMessage = "Success";
         String usernameDuplicatedMessage = "輸入的帳號已被其他人使用，請使用別的帳號註冊!";
         String emailDuplicatedMessage = "輸入的電子信箱已被其他人使用，請使用別的信箱註冊!";
