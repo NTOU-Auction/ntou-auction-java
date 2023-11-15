@@ -77,6 +77,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/api/v1/account/users").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/v1/account/users").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/account/users/**").hasRole(String.valueOf(Role.ADMIN))
+                        .requestMatchers( HttpMethod.GET,"/api/v1/product/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((session) -> session
