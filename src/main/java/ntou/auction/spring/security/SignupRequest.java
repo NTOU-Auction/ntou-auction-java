@@ -13,14 +13,14 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class SignupRequest {
 
-    @Length(min = 1, max = 34, message = "帳號長度限制為1~32個字元!")
+    @Length(min = 1, max = 128, message = "帳號長度限制為1~32位!")
     @Column(unique = true)
     private String username;
 
-    @Length(min = 1, max = 34, message = "暱稱長度限制為1~32個字元!")
+    @Length(min = 1, max = 128, message = "暱稱長度限制為1~32位!")
     private String name;
 
-    @Length(min = 8, max = 130, message = "密碼長度限制為8~128位!")
+    @Length(min = 8, max = 512, message = "密碼長度限制為8~128位!")
     private String password;
 
     // if avatar is more than 5MB, need to modify column length
