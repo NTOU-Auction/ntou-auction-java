@@ -34,7 +34,7 @@ public class AuthController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<Map<String, String>> signUp(@Valid @RequestBody SignupRequest request) {
-        String successMessage = "Success";
+        String successMessage = "成功註冊";
         String usernameDuplicatedMessage = "輸入的帳號已被其他人使用，請使用別的帳號註冊!";
         String emailDuplicatedMessage = "輸入的電子信箱已被其他人使用，請使用別的信箱註冊!";
         String emailAndUsernameDuplicatedMessage = "輸入的帳號及電子信箱皆已被其他人使用，請重新註冊!";

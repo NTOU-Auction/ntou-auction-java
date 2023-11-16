@@ -30,11 +30,11 @@ import java.util.Set;
 @Table(name = "user")
 public class User extends AbstractEntity implements UserDetails {
 
-    @Length(min = 1, max = 34, message = "帳號長度限制為1~32個字元!")
+    @Length(min = 1, max = 128, message = "帳號長度限制為1~32位!")
     @Column(unique = true)
     private String username;
 
-    @Length(min = 1, max = 34, message = "暱稱長度限制為1~32個字元!")
+    @Length(min = 1, max = 128, message = "暱稱長度限制為1~32位!")
     private String name;
 
     @NotBlank(message = "密碼不可為空!")

@@ -36,7 +36,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         for (ObjectError error : ex.getBindingResult().getGlobalErrors()) {
             errors.add(error.getDefaultMessage());
         }
-        Map<String, String> response = Collections.singletonMap("message", StringUtils.join(errors,' '));
+        Map<String, String> response = Collections.singletonMap("message", StringUtils.join(errors,'\n'));
         return handleExceptionInternal(
                 ex, response, headers, status, request);
     }
