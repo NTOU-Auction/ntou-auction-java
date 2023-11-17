@@ -5,8 +5,11 @@ import ntou.auction.spring.data.entity.Product;
 import ntou.auction.spring.data.entity.ProductRequest;
 import ntou.auction.spring.data.service.ProductService;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -53,5 +56,25 @@ public class ProductController {
         return productService.getID(ID);
     }
 
+    @PostMapping("/add")
+    ResponseEntity<Map<String,String>> postProduct(@Valid @RequestBody ProductRequest request){   //productrequest的限制
+
+        Map<String,String> successMessage = Collections.singletonMap("456","恭喜");
+
+        Product product = new Product();
+
+        product.setProductName(request.getProductName());
+        product.setProductDescription("123");
+        product.setPrice(10000L);
+        product.setSeller("wei");
+        product.setIsFixedPrice(true);
+        product.setUpsetPrice(1000L);
+        product.setProductImage("123");
+        product.setProductType(request.getProductType());
+        product.setCurrentPrice(123L);
+
+        productService.store(product);
+        return ResponseEntity.ok(successMessage);
+    }
 
 }
