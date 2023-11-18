@@ -60,6 +60,7 @@ public class ProductController {
     ResponseEntity<Map<String,String>> postProduct(@Valid @RequestBody ProductRequest request){   //productrequest的限制
 
         Map<String,String> successMessage = Collections.singletonMap("456","恭喜");
+        Map<String,String> productNameTooLong = Collections.singletonMap("message","87");
 
         Product product = new Product();
 
