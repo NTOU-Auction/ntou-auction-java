@@ -40,6 +40,7 @@ public class ProductController {
             String pt = request.getProductType();
             return productService.findByProductClassification(pt);
         }
+
         return productService.list();
     }
 
@@ -56,19 +57,19 @@ public class ProductController {
         return productService.getID(ID);
     }
 
-    @PostMapping("/add")
+    @PostMapping("/product")
     ResponseEntity<Map<String,String>> postProduct(@Valid @RequestBody ProductRequest request){   //productrequest的限制
 
-        Map<String,String> successMessage = Collections.singletonMap("456","恭喜");
-        Map<String,String> productNameTooLong = Collections.singletonMap("message","87");
+        Map<String,String> successMessage = Collections.singletonMap("message","成功上架");
+
 
         Product product = new Product();
 
         product.setProductName(request.getProductName());
         product.setProductDescription("123");
-        product.setPrice(10000L);
+        product.setPrice(request.getPrice());
         product.setSeller("wei");
-        product.setIsFixedPrice(true);
+        product.setIsFixedPrice(request.getIsFixedPrice());
         product.setUpsetPrice(1000L);
         product.setProductImage("123");
         product.setProductType(request.getProductType());
