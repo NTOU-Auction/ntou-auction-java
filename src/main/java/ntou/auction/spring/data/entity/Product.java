@@ -15,10 +15,10 @@ import org.hibernate.validator.constraints.Length;
 public class Product extends AbstractEntity {
 
     @NotNull
-    @Length(min = 1, max = 32)
+    @Length(min = 1, max = 128)
     private String productName;
 
-    @NotNull
+
     @Length(min = 1, max = 32)
     private String productType;
 
@@ -28,7 +28,7 @@ public class Product extends AbstractEntity {
     @NotNull
     private Boolean isFixedPrice;
 
-    @NotNull
+
     @Length(min = 1, max = 256)
     private String productDescription;
 
@@ -49,6 +49,7 @@ public class Product extends AbstractEntity {
     // if avatar is more than 5MB, need to modify column length
     @Lob
     @Column(length = 5242880)
-    private byte[] productImage;
+    @Length(min = 1, max = 5242880)
+    private String productImage;
 
 }
