@@ -2,6 +2,7 @@ package ntou.auction.spring.data.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Lob;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,29 +14,28 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 public class ProductRequest{
 
-    @NotNull
-    @Length(min = 1, max = 32 , message = "商品名稱至多32個中文字") //32個中文字
+    @NotNull (message="商品名稱不得為空")
+    @Length(min = 1, max = 128 , message = "商品名稱至多32個中文字")
     private String productName;
-/*
-    @NotNull
+
+    @NotNull (message="價格不得為空")
+    @Min (value = 0,message = "價格不得為零")
     private Long price;
-*/
-    @Length(min = 1, max = 32)
-    private String productType;
-/*
-    @NotNull
+
+    @NotNull (message = "請填寫販售方式")
     private Boolean isFixedPrice;
 
-    @Length(min = 1, max = 256)
+    @Length(min = 1, max = 32)
+    private String productType;
+
+    @Length(min = 1, max = 256,message = "商品敘述過長")
     private String productDescription;
-
-    private Long upsetPrice; //lowest requested price
-
-    private Long currentPrice;
 
     @Lob
     @Column(length = 5242880)
+    @Length(min = 1, max = 5242880 ,message = "圖片檔案過大，請重新上傳")
     private String productImage;
-*/
+
+
     private String searchType;
 }
