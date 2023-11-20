@@ -23,8 +23,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
     // ?1:productName
 
 
-    @Query("select p from Product p where p.productType = ?1 ")
-    List<Product> findByProductType(@Param("productType") String productType);
+
+    List<Product> findAllByProductType(String productType);
 
 
 }
