@@ -31,11 +31,13 @@ public class ProductRequest{
     @Length(min = 1, max = 256,message = "商品敘述過長")
     private String productDescription;
 
+    private Long upsetPrice; //lowest requested price
+
+    private Long currentPrice;
+
     @Lob
     @Column(length = 5242880)
     @Length(min = 1, max = 5242880 ,message = "圖片檔案過大，請重新上傳")
     private String productImage;
 
-
-    private String searchType;
 }
