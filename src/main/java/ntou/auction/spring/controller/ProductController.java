@@ -3,7 +3,10 @@ package ntou.auction.spring.controller;
 import jakarta.validation.Valid;
 import ntou.auction.spring.data.entity.Product;
 import ntou.auction.spring.data.entity.ProductRequest;
+import ntou.auction.spring.data.entity.ProductRequestGet;
 import ntou.auction.spring.data.service.ProductService;
+import ntou.auction.spring.data.service.UserIdentity;
+import ntou.auction.spring.data.service.UserService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,17 +20,20 @@ import java.util.Map;
 @CrossOrigin(origins = "http://localhost:3000")
 public class ProductController {
     private final ProductService productService;
+    private final UserIdentity userIdentity;
+    private final UserService userService;
 
 
-
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService,UserIdentity userIdentity,UserService userService) {
         this.productService = productService;
+        this.userIdentity = userIdentity;
+        this.userService = userService;
     }
 
 
     @GetMapping("/product")
     @ResponseBody
-    public List<Product>getProductName(@Valid @RequestBody ProductRequest request) {
+    public List<Product>getProductName(@Valid @RequestBody ProductRequestGet request) {
 
         long type =Integer.parseInt(request.getSearchType());
 
@@ -66,14 +72,23 @@ public class ProductController {
         Product product = new Product();
 
         product.setProductName(request.getProductName());
-        product.setProductDescription("123");
+        product.setProductDescription(request.getProductDescription());
         product.setPrice(request.getPrice());
-        product.setSeller("wei");
         product.setIsFixedPrice(request.getIsFixedPrice());
-        product.setUpsetPrice(1000L);
-        product.setProductImage("123");
+        product.setProductImage(request.getProductImage());
         product.setProductType(request.getProductType());
-        product.setCurrentPrice(123L);
+
+        product.setSellerID(20231120L);
+        if(request.getIsFixedPrice()){
+            product.setCurrentPrice(null);
+            product.setUpsetPrice(null);
+        }
+        else if(!request.getIsFixedPrice()){
+            product.setCurrentPrice(request.getCurrentPrice());
+            product.setUpsetPrice(request.getUpsetPrice());
+        }
+        product.setSellerID(userService.findByUsername(userIdentity.getUsername()).getId());
+
 
         productService.store(product);
         return ResponseEntity.ok(successMessage);
