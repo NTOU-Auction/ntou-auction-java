@@ -8,13 +8,16 @@ values (1, 'USER');
 insert into user_roles (user_id, roles)
 values (1, 'ADMIN');
 
-insert into product (version,id,product_name,product_type, price,is_fixed_price,product_description,sellerID,upset_price,current_price,product_image)
-values (1,1,'IPhone13','electronic',10000,true,'ggggg',1057088,1000,1500,null);
-
+insert into product (version,id,product_name,product_type,is_fixed_price,product_description,sellerid,upset_price,product_amount,current_price,update_time,finish_time,bid_increment,product_image)
+values (1,1,'IPhone13','electronic',true,'ggggg',1057088,null,3,1500,"2023-11-04 19:45:00",null,null,null);
 /*
-insert into product (version,id,product_name,product_type, price,is_fixed_price,product_description,sellerID,upset_price,current_price,product_image)
-values (2,3,'衛生紙','Daily need', 10000,true,'ggggg',987987,1000,1500,null);
+insert into product (version,id,product_name,product_type,is_fixed_price,product_description,sellerid,upset_price,product_amount,current_price,update_time,finish_time,bid_increment,product_image)
+values (1,2,'IPhone18','electronic',true,'ggggg',1057088,null,3,1500,"2023-11-04 19:45:00",null,null,null);
 
-insert into product (version,id,product_name,product_type, price,is_fixed_price,product_description,sellerID,upset_price,current_price,product_image)
-values (3,4,'action figure','Stationary',10000,true,'ggggg',456456,1000,1500,null);
+
+insert into product (version,id,product_name,product_type,is_fixed_price,product_description,sellerid,upset_price,product_amount,current_price,update_time,finish_time,bid_increment,product_image)
+values (1,3,'IPhone13','electronic',false,'ggggg',1057088,1000,1,1500,"2023-11-04 19:45:00","2023-11-04 20:45:00",1000,null);
+
+insert into product (version,id,product_name,product_type,is_fixed_price,product_description,sellerid,upset_price,product_amount,current_price,update_time,finish_time,bid_increment,product_image)
+values (1,4,'IPhone13','electronic',false,'ggggg',1057088,1000,1,1500,"2023-11-04 19:45:00","2023-11-04 20:45:00",1000,null);
 */
