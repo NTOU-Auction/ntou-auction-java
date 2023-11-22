@@ -1,11 +1,15 @@
 package ntou.auction.spring.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -22,28 +26,35 @@ public class Product extends AbstractEntity {
     @Length(min = 1, max = 32)
     private String productType;
 
-    @NotNull
-    private Long price;
 
     @NotNull
     private Boolean isFixedPrice;
 
 
-    @Length(min = 1, max = 256)
+    @Length(min = 1, max = 20971520)
     private String productDescription;
 
     @NotNull
     private Long sellerID;
+
+    private Long productAmount;
 
     //followings are non-isFixedPrice feature
 
 
     private Long upsetPrice; //lowest requested price
 
-
+    @NotNull
     private Long currentPrice;
 
+    private Long bidIncrement;
 
+    @NotNull
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime updateTime;
+
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime finishTime;
 
     // if avatar is more than 5MB, need to modify column length
     @Lob
