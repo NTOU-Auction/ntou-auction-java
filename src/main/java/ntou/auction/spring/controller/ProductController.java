@@ -1,8 +1,9 @@
 package ntou.auction.spring.controller;
 
 import jakarta.validation.Valid;
+import ntou.auction.spring.data.entity.PostNonFixedPriceProductRequest;
 import ntou.auction.spring.data.entity.Product;
-import ntou.auction.spring.data.entity.ProductRequest;
+import ntou.auction.spring.data.entity.PostFixedPriceProductRequest;
 import ntou.auction.spring.data.entity.ProductRequestGet;
 import ntou.auction.spring.data.service.ProductService;
 import ntou.auction.spring.data.service.UserIdentity;
@@ -10,6 +11,9 @@ import ntou.auction.spring.data.service.UserService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -63,8 +67,8 @@ public class ProductController {
         return productService.getID(ID);
     }
 
-    @PostMapping("/product")
-    ResponseEntity<Map<String,String>> postProduct(@Valid @RequestBody ProductRequest request){   //productrequest的限制
+    @PostMapping("/fixedproduct")
+    ResponseEntity<Map<String,String>> postProduct(@Valid @RequestBody PostFixedPriceProductRequest request){   //productrequest的限制
 
         Map<String,String> successMessage = Collections.singletonMap("message","成功上架");
 
@@ -73,25 +77,56 @@ public class ProductController {
 
         product.setProductName(request.getProductName());
         product.setProductDescription(request.getProductDescription());
-        product.setPrice(request.getPrice());
-        product.setIsFixedPrice(request.getIsFixedPrice());
+        product.setIsFixedPrice(true);
         product.setProductImage(request.getProductImage());
         product.setProductType(request.getProductType());
-
-        product.setSellerID(20231120L);
-        if(request.getIsFixedPrice()){
-            product.setCurrentPrice(null);
-            product.setUpsetPrice(null);
-        }
-        else if(!request.getIsFixedPrice()){
-            product.setCurrentPrice(request.getCurrentPrice());
-            product.setUpsetPrice(request.getUpsetPrice());
-        }
+        product.setCurrentPrice(request.getCurrentPrice());
+        product.setUpsetPrice(null);
+        product.setBidIncrement(null);
+        product.setProductAmount(request.getProductAmount());
         product.setSellerID(userService.findByUsername(userIdentity.getUsername()).getId());
+
+        product.setUpdateTime(LocalDateTime.now());
 
 
         productService.store(product);
         return ResponseEntity.ok(successMessage);
     }
+
+    @PostMapping("/nonfixedproduct")
+    ResponseEntity<Map<String,String>> postProduct(@Valid @RequestBody PostNonFixedPriceProductRequest request){   //productrequest的限制
+
+        Map<String,String> successMessage = Collections.singletonMap("message","成功上架");
+        Map<String,String> fail = Collections.singletonMap("message","截止時間錯誤");
+
+        Product product = new Product();
+
+        product.setProductName(request.getProductName());
+        product.setProductDescription(request.getProductDescription());
+        product.setIsFixedPrice(false);
+        product.setProductImage(request.getProductImage());
+        product.setProductType(request.getProductType());
+        product.setCurrentPrice(request.getUpsetPrice());
+        product.setUpsetPrice(request.getUpsetPrice());
+        product.setBidIncrement(request.getBidIncrement());
+        product.setProductAmount(1L);
+
+        LocalDateTime now = LocalDateTime.now();
+
+        product.setSellerID(userService.findByUsername(userIdentity.getUsername()).getId());
+        product.setUpdateTime(now);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(request.getFinishTime(), formatter);
+
+        if(!now.isBefore(dateTime)){
+            return ResponseEntity.badRequest().body(fail);
+        }
+        product.setFinishTime(dateTime);
+
+        productService.store(product);
+        return ResponseEntity.ok(successMessage);
+    }
+
 
 }
