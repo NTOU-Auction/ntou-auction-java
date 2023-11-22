@@ -12,32 +12,30 @@ import org.hibernate.validator.constraints.Length;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductRequest{
+public class PostFixedPriceProductRequest {
 
     @NotNull (message="商品名稱不得為空")
     @Length(min = 1, max = 128 , message = "商品名稱至多32個中文字")
     private String productName;
 
     @NotNull (message="價格不得為空")
-    @Min (value = 0,message = "價格不得為零")
-    private Long price;
+    @Min (value = 1,message = "價格須為正整數")
+    private Long currentPrice;
 
-    @NotNull (message = "請填寫販售方式")
-    private Boolean isFixedPrice;
 
     @Length(min = 1, max = 32)
     private String productType;
 
-    @Length(min = 1, max = 256,message = "商品敘述過長")
+    @Length(min = 1, max = 20971520,message = "商品敘述過長")
     private String productDescription;
-
-    private Long upsetPrice; //lowest requested price
-
-    private Long currentPrice;
 
     @Lob
     @Column(length = 5242880)
     @Length(min = 1, max = 5242880 ,message = "圖片檔案過大，請重新上傳")
     private String productImage;
+
+    @NotNull (message="商品數量不得為空")
+    @Min (value = 1,message = "商品至少一個")
+    private Long productAmount;
 
 }
