@@ -61,7 +61,7 @@ public class ProductService {
     }
 
     public List<Product> findByProductClassification(String productType){
-        return repository.findByProductType(productType);
+        return repository.findAllByProductType(productType);
     }
 
 }
