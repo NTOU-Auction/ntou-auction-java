@@ -1,7 +1,7 @@
 package ntou.auction.spring.controller;
 
 import jakarta.validation.Valid;
-import ntou.auction.spring.data.entity.Product;
+import ntou.auction.spring.data.entity.ProductAddAmount;
 import ntou.auction.spring.data.entity.Shoppingcart;
 import ntou.auction.spring.data.entity.ShoppingcartRequest;
 import ntou.auction.spring.data.service.ProductService;
@@ -47,13 +47,13 @@ public class ShoppingcartController {
 
     @GetMapping("/view")
     @ResponseBody
-    List<Product> getProduct() {
+    List<ProductAddAmount> getProduct() {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         Shoppingcart userShoppingcart = getUserShoppingcart(userId);
         if(userShoppingcart==null) return null;
-        List<Product> result = new ArrayList<>();
-        for(Long productId: userShoppingcart.getProductId()) {
-            result.add(productService.getID(productId));
+        List<ProductAddAmount> result = new ArrayList<>();
+        for(Map.Entry<Long, Long> product: userShoppingcart.getProductItems().entrySet()) {
+            result.add(new ProductAddAmount(productService.getID(product.getKey()), product.getValue()));
         }
         return result;
     }

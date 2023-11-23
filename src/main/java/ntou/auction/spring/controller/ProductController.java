@@ -70,7 +70,7 @@ public class ProductController {
         product.setSeller("wei");
         product.setIsFixedPrice(true);
         product.setUpsetPrice(1000L);
-        product.setProductImage("123");
+        product.setProductImage("123".getBytes());
         product.setProductType(request.getProductType());
         product.setCurrentPrice(123L);
 
