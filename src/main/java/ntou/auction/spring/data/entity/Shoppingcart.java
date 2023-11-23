@@ -5,8 +5,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Entity
 @Data
@@ -20,16 +20,25 @@ public class Shoppingcart extends AbstractEntity {
 
     @ElementCollection
     @CollectionTable(name = "productId")
-    private List<Long> productId = new ArrayList<>();
+    private Map<Long, Long> productItems = new HashMap<>();
 
     public @NotNull Long getUserId() {
         return userid;
     }
-    public void addProductId(Long product) {
-        productId.add(product);
+
+    public void addProductId(Long product, Long amount) {
+        if(!productItems.containsKey(product)) productItems.put(product, 0L);
+        productItems.replace(product, productItems.get(product)+amount);
     }
 
-    public boolean deleteProduct(Long product) {
-        return productId.remove(product);
+    public boolean deleteProduct(Long product, Long amount) {
+        if (productItems.get(product) == null) return false;
+        if (productItems.get(product) == 0L) {
+            productItems.remove(product);
+            return false;
+        }
+        productItems.replace(product, productItems.get(product) - amount);
+        if (productItems.get(product) == 0L) productItems.remove(product);
+        return true;
     }
 }
