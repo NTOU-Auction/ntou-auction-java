@@ -50,11 +50,20 @@ public class ProductService {
         repository.save(product);
     }
 
-/*
-    public boolean isProductNameNonExist(String productName) {
-        return repository.findByProductName(productName) == null;
+
+    public boolean isBidReasonable(Long bid, Long id) {
+        Product pr = this.getID(id);
+        return (bid - pr.getCurrentPrice()) >= pr.getBidIncrement();
     }
-*/
+    public void bid(Long bid,Long id){
+        if (this.isBidReasonable(bid,id)){
+            System.out.println("合理");
+            Product product = this.getID(id);
+            product.setCurrentPrice(bid);
+            this.store(product);
+        }
+    }
+
 
     public List<Product> findByProductName(String productName) {
         return repository.findAllByFuzzyProductName(productName);

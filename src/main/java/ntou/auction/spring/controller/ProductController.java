@@ -128,5 +128,17 @@ public class ProductController {
         return ResponseEntity.ok(successMessage);
     }
 
+    @PatchMapping("/{ID}/{bid}") //商品ID 出價。出價也需傳入token
+    ResponseEntity<Map<String,String>> bidProduct(@PathVariable Long ID,@PathVariable Long bid){
+
+        Map<String,String> successMessage = Collections.singletonMap("message","成功出價");
+        Map<String,String> failMessage = Collections.singletonMap("message","出價不合理，重新出價");
+
+        if(!productService.isBidReasonable(bid,ID)){
+            return ResponseEntity.badRequest().body(failMessage);
+        }
+        productService.bid(bid,ID);
+        return ResponseEntity.ok(successMessage);
+    }
 
 }
