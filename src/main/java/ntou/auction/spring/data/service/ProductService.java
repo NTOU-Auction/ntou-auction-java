@@ -40,7 +40,7 @@ public class ProductService {
 
     public Product getID(Long id){
         return repository.findById(id).orElse(null);
-    };
+    }
 
     public int count() {
         return (int) repository.count();
