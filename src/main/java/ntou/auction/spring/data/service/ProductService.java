@@ -1,11 +1,10 @@
 package ntou.auction.spring.data.service;
+import jakarta.validation.constraints.Null;
 import ntou.auction.spring.data.entity.Product;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -13,9 +12,12 @@ public class ProductService {
 
     private final ProductRepository repository;
 
-
-    public ProductService(ProductRepository repository) {
+    private final UserIdentity userIdentity;
+    private final UserService userService;
+    public ProductService(ProductRepository repository, UserIdentity userIdentity, UserService userService) {
         this.repository = repository;
+        this.userIdentity = userIdentity;
+        this.userService = userService;
     }
 
     public Product get(String productName) {
@@ -53,13 +55,18 @@ public class ProductService {
 
     public boolean isBidReasonable(Long bid, Long id) {
         Product pr = this.getID(id);
+        if(pr.getCurrentPrice().equals(pr.getUpsetPrice()) && bid >= pr.getUpsetPrice() && pr.getBidInfo().isEmpty()){
+            return true;
+        }
         return (bid - pr.getCurrentPrice()) >= pr.getBidIncrement();
     }
-    public void bid(Long bid,Long id){
+    public void bid(Long bid,Long id,Long userID){
         if (this.isBidReasonable(bid,id)){
             System.out.println("合理");
             Product product = this.getID(id);
             product.setCurrentPrice(bid);
+            Map<Long,Long> bidInfo = product.getBidInfo();
+            bidInfo.put(userID,bid);
             this.store(product);
         }
     }

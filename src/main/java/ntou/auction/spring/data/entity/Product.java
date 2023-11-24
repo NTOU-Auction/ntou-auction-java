@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Entity
 @Data
@@ -41,6 +42,9 @@ public class Product extends AbstractEntity {
 
     //followings are non-isFixedPrice feature
 
+    @ElementCollection
+    @CollectionTable(name = "bidInfo")
+    private Map<Long,Long> bidInfo;
 
     private Long upsetPrice; //lowest requested price
 

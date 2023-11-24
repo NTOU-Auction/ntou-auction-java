@@ -134,7 +134,9 @@ public class ProductController {
         if(!productService.isBidReasonable(request.getBid(), request.getProductID())) {
             return ResponseEntity.badRequest().body(failMessage);
         }
-        productService.bid(request.getBid(), request.getProductID());
+        System.out.println(userIdentity.getUsername());
+        productService.bid(request.getBid(), request.getProductID(),userService.findByUsername(userIdentity.getUsername()).getId());
+
         return ResponseEntity.ok(successMessage);
     }
 
