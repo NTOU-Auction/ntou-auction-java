@@ -1,10 +1,7 @@
 package ntou.auction.spring.controller;
 
 import jakarta.validation.Valid;
-import ntou.auction.spring.data.entity.PostNonFixedPriceProductRequest;
-import ntou.auction.spring.data.entity.Product;
-import ntou.auction.spring.data.entity.PostFixedPriceProductRequest;
-import ntou.auction.spring.data.entity.ProductRequestGet;
+import ntou.auction.spring.data.entity.*;
 import ntou.auction.spring.data.service.ProductService;
 import ntou.auction.spring.data.service.UserIdentity;
 import ntou.auction.spring.data.service.UserService;
@@ -128,16 +125,16 @@ public class ProductController {
         return ResponseEntity.ok(successMessage);
     }
 
-    @PatchMapping("/{ID}/{bid}") //商品ID 出價。出價也需傳入token
-    ResponseEntity<Map<String,String>> bidProduct(@PathVariable Long ID,@PathVariable Long bid){
+    @PatchMapping("/bid") //商品ID 出價。出價也需傳入token
+    ResponseEntity<Map<String,String>> bidProduct(@Valid @RequestBody BidRequest request){
 
         Map<String,String> successMessage = Collections.singletonMap("message","成功出價");
-        Map<String,String> failMessage = Collections.singletonMap("message","出價不合理，重新出價");
+        Map<String,String> failMessage = Collections.singletonMap("message","出價不合理，出價需比當前最高價高" + productService.getID(request.getProductID()).getBidIncrement());
 
-        if(!productService.isBidReasonable(bid,ID)){
+        if(!productService.isBidReasonable(request.getBid(), request.getProductID())) {
             return ResponseEntity.badRequest().body(failMessage);
         }
-        productService.bid(bid,ID);
+        productService.bid(request.getBid(), request.getProductID());
         return ResponseEntity.ok(successMessage);
     }
 
