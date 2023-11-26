@@ -66,4 +66,11 @@ public class Product extends AbstractEntity {
     @Length(min = 1, max = 5242880)
     private String productImage;
 
+    public boolean isExpired() {
+        if(isFixedPrice){
+            return false;
+        }
+        LocalDateTime now = LocalDateTime.now();
+        return !now.isBefore(this.finishTime);
+    }
 }
