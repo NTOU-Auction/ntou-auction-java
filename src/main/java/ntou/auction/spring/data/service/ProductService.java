@@ -12,12 +12,9 @@ public class ProductService {
 
     private final ProductRepository repository;
 
-    private final UserIdentity userIdentity;
-    private final UserService userService;
-    public ProductService(ProductRepository repository, UserIdentity userIdentity, UserService userService) {
+
+    public ProductService(ProductRepository repository) {
         this.repository = repository;
-        this.userIdentity = userIdentity;
-        this.userService = userService;
     }
 
     public Product get(String productName) {
@@ -80,4 +77,7 @@ public class ProductService {
         return repository.findAllByProductType(productType);
     }
 
+    public List<Product> findByProductNonFixed(){
+        return repository.findAllByIsFixedPriceFalse();
+    }
 }
