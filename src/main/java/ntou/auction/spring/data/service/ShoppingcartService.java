@@ -41,7 +41,7 @@ public class ShoppingcartService {
         return true;
     }
 
-    public void addProductByUserId(Long userId, Long productId) {
+    public void addProductByUserId(Long userId, Long productId, Long amount) {
         Shoppingcart userShoppingcart = getByUserId(userId);
         if (userShoppingcart == null) {
             Map<Long, Long> product = new HashMap<>();
@@ -49,15 +49,25 @@ public class ShoppingcartService {
             repository.save(newShoppingcart);
             userShoppingcart = getByUserId(userId);
         }
-        userShoppingcart.addProductId(productId, 1L);
+        userShoppingcart.addProductId(productId, amount);
         repository.save(userShoppingcart);
+    }
+
+    public boolean decreaseProductByUserId(Long userId, Long productId, Long amount) {
+        Shoppingcart userShoppingcart = getByUserId(userId);
+        if (userShoppingcart == null) return false;
+        boolean result = userShoppingcart.decreaseProduct(productId, amount);
+        if (!result) return false;
+        repository.save(userShoppingcart);
+        if (userShoppingcart.getProductItems().isEmpty()) repository.deleteByUserid(userId);
+        return true;
     }
 
     public boolean deleteProductByUserId(Long userId, Long productId) {
         Shoppingcart userShoppingcart = getByUserId(userId);
         if (userShoppingcart == null) return false;
-        boolean result = userShoppingcart.deleteProduct(productId, 1L);
-        if (!result) return false;
+        boolean result = userShoppingcart.deleteProduct(productId);
+        if(!result) return false;
         repository.save(userShoppingcart);
         if (userShoppingcart.getProductItems().isEmpty()) repository.deleteByUserid(userId);
         return true;

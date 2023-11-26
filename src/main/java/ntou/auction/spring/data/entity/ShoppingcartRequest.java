@@ -11,4 +11,6 @@ import lombok.NoArgsConstructor;
 public class ShoppingcartRequest {
     @NotNull
     private Long productId;
+
+    private Long amount;
 }
