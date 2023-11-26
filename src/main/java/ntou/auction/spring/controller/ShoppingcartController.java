@@ -39,17 +39,12 @@ public class ShoppingcartController {
     @GetMapping("/shoppingcart")
     @ResponseBody
     List<Shoppingcart> getShoppingcartProfile() { return shoppingcartService.list(); }
-    @GetMapping("/{userId}")
-    @ResponseBody
-    Shoppingcart getUserShoppingcart(@PathVariable long userId) {
-        return shoppingcartService.getByUserId(userId);
-    }
 
     @GetMapping("/view")
     @ResponseBody
     List<ProductAddAmount> getProduct() {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
-        Shoppingcart userShoppingcart = getUserShoppingcart(userId);
+        Shoppingcart userShoppingcart = shoppingcartService.getByUserId(userId);
         if(userShoppingcart==null) return null;
         List<ProductAddAmount> result = new ArrayList<>();
         for(Map.Entry<Long, Long> product: userShoppingcart.getProductItems().entrySet()) {
@@ -61,8 +56,18 @@ public class ShoppingcartController {
     ResponseEntity<Map<String,String>> addProduct(@Valid @RequestBody ShoppingcartRequest request) {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         Long addProductId = request.getProductId();
-        shoppingcartService.addProductByUserId(userId, addProductId);
+        Long amount = request.getAmount();
+        shoppingcartService.addProductByUserId(userId, addProductId, amount==null?1L:amount);
         return ResponseEntity.ok(successMessage);
+    }
+
+    @DeleteMapping("/decrease")
+    ResponseEntity<Map<String,String>> decreaseProduct(@Valid @RequestBody ShoppingcartRequest request) {
+        Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
+        Long addProductId = request.getProductId();
+        Long amount = request.getAmount();
+        boolean result = shoppingcartService.decreaseProductByUserId(userId, addProductId, amount==null?1L:amount);
+        return (result?ResponseEntity.ok(successMessage):ResponseEntity.badRequest().body(failMessage));
     }
 
     @DeleteMapping("/delete")
@@ -70,14 +75,14 @@ public class ShoppingcartController {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         Long addProductId = request.getProductId();
         boolean result = shoppingcartService.deleteProductByUserId(userId, addProductId);
-        return (result?ResponseEntity.ok(successMessage):ResponseEntity.ok(failMessage));
+        return (result?ResponseEntity.ok(successMessage):ResponseEntity.badRequest().body(failMessage));
     }
 
     @DeleteMapping("/deleteall")
     ResponseEntity<Map<String,String>> deleteAllProduct() {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         boolean result = shoppingcartService.deleteShoppingcartByUserId(userId);
-        if(!result) return ResponseEntity.ok(failMessage);
+        if(!result) return ResponseEntity.badRequest().body(failMessage);
         return ResponseEntity.ok(successMessage);
     }
 }

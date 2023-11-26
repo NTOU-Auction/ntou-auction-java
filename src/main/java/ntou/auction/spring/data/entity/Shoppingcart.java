@@ -31,14 +31,25 @@ public class Shoppingcart extends AbstractEntity {
         productItems.replace(product, productItems.get(product)+amount);
     }
 
-    public boolean deleteProduct(Long product, Long amount) {
+    public boolean decreaseProduct(Long product, Long amount) {
         if (productItems.get(product) == null) return false;
         if (productItems.get(product) == 0L) {
             productItems.remove(product);
             return false;
         }
+        if(productItems.get(product) < amount) return false;
         productItems.replace(product, productItems.get(product) - amount);
         if (productItems.get(product) == 0L) productItems.remove(product);
+        return true;
+    }
+
+    public boolean deleteProduct(Long product) {
+        if (productItems.get(product) == null) return false;
+        if (productItems.get(product) == 0L) {
+            productItems.remove(product);
+            return false;
+        }
+        productItems.remove(product);
         return true;
     }
 }
