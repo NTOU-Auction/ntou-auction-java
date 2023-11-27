@@ -70,7 +70,7 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers( "/api/v1/test/**").permitAll()
+                        .requestMatchers("/api/v1/test/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/log-in").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/sign-up").permitAll()
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
@@ -79,6 +79,8 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/api/v1/account/users").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/account/users/**").hasRole(String.valueOf(Role.ADMIN))
                         .requestMatchers( HttpMethod.GET,"/api/v1/product/**").permitAll()
+                        .requestMatchers( HttpMethod.POST,"/api/v1/product/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((session) -> session
@@ -86,7 +88,6 @@ public class SecurityConfiguration {
                 );
         return http.build();
     }
-
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
