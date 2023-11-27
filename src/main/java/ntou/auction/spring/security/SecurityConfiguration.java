@@ -77,6 +77,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/api/v1/product/product/name").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/product/product/classification").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/product/{ID}").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((session) -> session
