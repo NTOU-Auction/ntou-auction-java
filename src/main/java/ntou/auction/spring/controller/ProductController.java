@@ -1,10 +1,7 @@
 package ntou.auction.spring.controller;
 
 import jakarta.validation.Valid;
-import ntou.auction.spring.data.entity.PostNonFixedPriceProductRequest;
-import ntou.auction.spring.data.entity.Product;
-import ntou.auction.spring.data.entity.PostFixedPriceProductRequest;
-import ntou.auction.spring.data.entity.ProductRequestGet;
+import ntou.auction.spring.data.entity.*;
 import ntou.auction.spring.data.service.ProductService;
 import ntou.auction.spring.data.service.UserIdentity;
 import ntou.auction.spring.data.service.UserService;
@@ -128,5 +125,25 @@ public class ProductController {
         return ResponseEntity.ok(successMessage);
     }
 
+    @PatchMapping("/bid") //商品ID 出價。出價也需傳入token
+    ResponseEntity<Map<String,String>> bidProduct(@Valid @RequestBody BidRequest request){
+
+        Map<String,String> successMessage = Collections.singletonMap("message","成功出價");
+        Map<String,String> failMessage = Collections.singletonMap("message","出價不合理，出價需比當前最高價高" + productService.getID(request.getProductID()).getBidIncrement());
+        Map<String,String> expired = Collections.singletonMap("message","競標已結束");
+
+        LocalDateTime now = LocalDateTime.now();
+        if(!now.isBefore(productService.getID(request.getProductID()).getFinishTime())){
+            return ResponseEntity.badRequest().body(expired);
+        }
+
+        if(!productService.isBidReasonable(request.getBid(), request.getProductID())) {
+            return ResponseEntity.badRequest().body(failMessage);
+        }
+        System.out.println(userIdentity.getUsername());
+        productService.bid(request.getBid(), request.getProductID(),userService.findByUsername(userIdentity.getUsername()).getId());
+
+        return ResponseEntity.ok(successMessage);
+    }
 
 }

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Entity
 @Data
@@ -41,6 +42,9 @@ public class Product extends AbstractEntity {
 
     //followings are non-isFixedPrice feature
 
+    @ElementCollection
+    @CollectionTable(name = "bidInfo")
+    private Map<Long,Long> bidInfo;
 
     private Long upsetPrice; //lowest requested price
 
@@ -62,4 +66,11 @@ public class Product extends AbstractEntity {
     @Length(min = 1, max = 5242880)
     private String productImage;
 
+    public boolean isExpired() {
+        if(isFixedPrice){
+            return false;
+        }
+        LocalDateTime now = LocalDateTime.now();
+        return !now.isBefore(this.finishTime);
+    }
 }

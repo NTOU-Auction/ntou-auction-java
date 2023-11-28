@@ -15,6 +15,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
 
     Product findByProductName(String productName);
 
+    List <Product> findAllByIsFixedPriceFalse();
+
     Product findById(long id);
 
     @Query("select p from Product p " +
