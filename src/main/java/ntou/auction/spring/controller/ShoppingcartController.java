@@ -60,9 +60,7 @@ public class ShoppingcartController {
             getProducts.add(new ProductAddAmount(nowProduct, product.getValue()));
             result.replace(sellerName, getProducts);
         }
-        ProductClassificatedBySeller re = new ProductClassificatedBySeller();
-        re.setProductShowBySeller(result);
-        return re;
+        return new ProductClassificatedBySeller(result);
     }
     @PostMapping("/add")
     ResponseEntity<Map<String,String>> addProduct(@Valid @RequestBody ShoppingcartRequest request) {
