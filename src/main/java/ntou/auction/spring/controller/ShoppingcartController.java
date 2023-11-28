@@ -1,9 +1,7 @@
 package ntou.auction.spring.controller;
 
 import jakarta.validation.Valid;
-import ntou.auction.spring.data.entity.ProductClassificatedBySeller;
-import ntou.auction.spring.data.entity.Shoppingcart;
-import ntou.auction.spring.data.entity.ShoppingcartRequest;
+import ntou.auction.spring.data.entity.*;
 import ntou.auction.spring.data.service.ProductService;
 import ntou.auction.spring.data.service.ShoppingcartService;
 import ntou.auction.spring.data.service.UserIdentity;
@@ -12,10 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/shoppingcart", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -46,17 +41,35 @@ public class ShoppingcartController {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         Shoppingcart userShoppingcart = shoppingcartService.getByUserId(userId);
         if(userShoppingcart==null) return null;
-        ProductClassificatedBySeller result = new ProductClassificatedBySeller();
+        Map<String, List<ProductAddAmount>> result = new HashMap<>();
         for(Map.Entry<Long, Long> product: userShoppingcart.getProductItems().entrySet()) {
-            result.addProduct(productService.getID(product.getKey()), product.getValue());
+            System.out.println(product.getKey() + " " + product.getValue());
+            Product nowProduct = productService.getID(product.getKey());
+            Long sellerId = nowProduct.getSellerID();
+            Optional<User> sellerUser = userService.get(sellerId);
+            if (sellerUser.isEmpty()) {
+                shoppingcartService.deleteProductByUserId(userId, product.getKey());
+                continue;
+            }
+            String sellerName = sellerUser.get().getUsername();
+            if (!result.containsKey("@" + sellerName)) {
+                result.put("@" + sellerName, new ArrayList<>());
+            }
+            List<ProductAddAmount> getProducts = result.get("@" + sellerName);
+            if (getProducts == null) getProducts = new ArrayList<>();
+            getProducts.add(new ProductAddAmount(nowProduct, product.getValue()));
+            result.replace(sellerName, getProducts);
         }
-        return result;
+        ProductClassificatedBySeller re = new ProductClassificatedBySeller();
+        re.setProductShowBySeller(result);
+        return re;
     }
     @PostMapping("/add")
     ResponseEntity<Map<String,String>> addProduct(@Valid @RequestBody ShoppingcartRequest request) {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         Long addProductId = request.getProductId();
         Long amount = request.getAmount();
+        if(productService.getID(addProductId)==null) return ResponseEntity.badRequest().body(failMessage);
         shoppingcartService.addProductByUserId(userId, addProductId, amount==null?1L:amount);
         return ResponseEntity.ok(successMessage);
     }
