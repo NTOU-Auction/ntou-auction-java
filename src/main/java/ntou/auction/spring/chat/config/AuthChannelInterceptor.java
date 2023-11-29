@@ -11,6 +11,7 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -49,8 +50,14 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
                                 new UsernamePasswordAuthenticationToken(userDetails.getUsername(), userDetails.getPassword());
                         accessor.setUser(authentication);
                         return message;
+                    }else{
+                        System.out.println("WebSocket連線驗證失敗");
+                        throw new AccessDeniedException("WebSocket連線驗證失敗");
                     }
                 }
+            }else{
+                System.out.println("WebSocket連線驗證失敗");
+                throw new AccessDeniedException("WebSocket連線驗證失敗");
             }
         }
         System.out.println("message:" + message);
