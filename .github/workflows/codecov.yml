@@ -19,7 +19,7 @@ jobs:
         with:
           mysql database: 'NA'
           mysql user: 'NA'
-          mysql password: ${{ secrets.DBPASSWORD }}
+          mysql password: 'NA'
       - name: Install dependencies
         run: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       - name: Run tests and collect coverage
