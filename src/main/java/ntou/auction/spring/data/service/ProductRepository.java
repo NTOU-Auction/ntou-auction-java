@@ -15,6 +15,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
 
     Product findByProductName(String productName);
 
+    List <Product> findAllByIsFixedPriceFalse();
+
     Product findById(long id);
 
     @Query("select p from Product p " +
@@ -23,8 +25,8 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
     // ?1:productName
 
 
-    @Query("select p from Product p where p.productType = ?1 ")
-    List<Product> findByProductType(@Param("productType") String productType);
+
+    List<Product> findAllByProductType(String productType);
 
 
 }
