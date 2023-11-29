@@ -3,7 +3,7 @@ on: [push, pull_request]
 env:
   NA_DB_URL: 'jdbc:mariadb://localhost:3306/NA'
   NA_DB_USER: 'NA'
-  NA_DB_PASSWORD: ${{ secrets.DBPASSWORD }}
+  NA_DB_PASSWORD: 'NA'
 jobs:
   run:
     runs-on: ubuntu-latest
