@@ -3,7 +3,7 @@ on: [push, pull_request]
 env:
   NA_DB_URL: 'jdbc:mariadb://localhost:3306/NA'
   NA_DB_USER: 'NA'
-  NA_DB_PASSWORD: ${{ secrets.DBPassword }}
+  NA_DB_PASSWORD: ${{ secrets.DBPASSWORD }}
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -19,7 +19,7 @@ jobs:
         with:
           mysql database: 'NA'
           mysql user: 'NA'
-          mysql password: ${{ secrets.DBPassword }}
+          mysql password: ${{ secrets.DBPASSWORD }}
       - name: Install dependencies
         run: mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
       - name: Run tests and collect coverage
