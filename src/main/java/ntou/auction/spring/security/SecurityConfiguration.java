@@ -72,11 +72,13 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers( "/api/v1/test/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/log-in").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/sign-up").permitAll()
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/account/users/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/v1/account/users").authenticated()
                         .requestMatchers(HttpMethod.POST, "/api/v1/account/users").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/v1/account/users/**").hasRole(String.valueOf(Role.ADMIN))
+                        .requestMatchers( HttpMethod.GET,"/api/v1/product/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((session) -> session

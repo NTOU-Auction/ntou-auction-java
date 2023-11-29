@@ -20,11 +20,13 @@ public class UserController {
     }
 
     // for admin usage
+    /*
     @GetMapping("/users/{username}")
     @ResponseBody
     User getByUser(@PathVariable String username) {
         return userService.findByUsername(username);
     }
+    */
 
     @GetMapping("/users")
     @ResponseBody
@@ -32,8 +34,4 @@ public class UserController {
         return userService.findByUsername(userIdentity.getUsername());
     }
 
-    @GetMapping("admin")
-    public String helloAdmin() {
-        return "Hello Admin";
-    }
 }
