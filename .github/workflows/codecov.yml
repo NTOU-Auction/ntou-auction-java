@@ -16,8 +16,8 @@ jobs:
           java-version: 21
       - name: Start MariaDB
         uses: getong/mariadb-action@v1.1   
-	      with:
-    	    mysql database: 'NA'
+        with:
+          mysql database: 'NA'
           mysql user: 'NA'
           mysql password: ${{ secrets.DBPassword }}
       - name: Install dependencies
