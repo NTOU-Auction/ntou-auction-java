@@ -21,6 +21,12 @@ public class ShoppingcartController {
     private static final Map<String,String> successMessage = Collections.singletonMap("message","成功");
     private static final Map<String,String> failMessage = Collections.singletonMap("message","好像發生了什麼錯誤，請檢查一下腦袋");
 
+    private static final Map<String,String> ErrorIdMessage = Collections.singletonMap("message","沒這商品，跟你女友一樣不存在");
+
+    private static final Map<String,String> ErrorAmountZeroMessage = Collections.singletonMap("message","你知道這商品的數量會變得跟你腦袋一樣是負的嗎");
+
+    private static final Map<String,String> ErrorAmountExceedMessage = Collections.singletonMap("message","商品滿書來了");
+
     private final UserService userService;
 
     private final UserIdentity userIdentity;
@@ -67,9 +73,9 @@ public class ShoppingcartController {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         Long addProductId = request.getProductId();
         Long amount = request.getAmount();
-        if(productService.getID(addProductId)==null) return ResponseEntity.badRequest().body(failMessage);
-        shoppingcartService.addProductByUserId(userId, addProductId, amount==null?1L:amount);
-        return ResponseEntity.ok(successMessage);
+        if(productService.getID(addProductId)==null) return ResponseEntity.badRequest().body(ErrorIdMessage);
+        boolean result = shoppingcartService.addProductByUserId(userId, addProductId, amount==null?1L:amount);
+        return result?ResponseEntity.ok(successMessage):ResponseEntity.badRequest().body(ErrorAmountExceedMessage);
     }
 
     @DeleteMapping("/decrease")
@@ -77,16 +83,20 @@ public class ShoppingcartController {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         Long addProductId = request.getProductId();
         Long amount = request.getAmount();
-        boolean result = shoppingcartService.decreaseProductByUserId(userId, addProductId, amount==null?1L:amount);
-        return (result?ResponseEntity.ok(successMessage):ResponseEntity.badRequest().body(failMessage));
+        Long result = shoppingcartService.decreaseProductByUserId(userId, addProductId, amount==null?1L:amount);
+        // 0: exist error, 1: amount error, 2: OK
+        if(result.equals(0L)) return ResponseEntity.badRequest().body(ErrorIdMessage); //shoppingcart does not exist
+        if(result.equals(1L)) return ResponseEntity.badRequest().body(ErrorAmountZeroMessage); //amount error
+        return ResponseEntity.ok(successMessage);
     }
+
 
     @DeleteMapping("/delete")
     ResponseEntity<Map<String,String>> deleteProduct(@Valid @RequestBody ShoppingcartRequest request) {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         Long addProductId = request.getProductId();
         boolean result = shoppingcartService.deleteProductByUserId(userId, addProductId);
-        return (result?ResponseEntity.ok(successMessage):ResponseEntity.badRequest().body(failMessage));
+        return (result?ResponseEntity.ok(successMessage):ResponseEntity.badRequest().body(ErrorIdMessage));
     }
 
     @DeleteMapping("/deleteall")
