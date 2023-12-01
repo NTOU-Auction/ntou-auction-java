@@ -3,6 +3,7 @@ package ntou.auction.spring.controller;
 import jakarta.validation.Valid;
 import ntou.auction.spring.data.entity.*;
 import ntou.auction.spring.data.service.ProductService;
+import ntou.auction.spring.data.service.ShoppingcartService;
 import ntou.auction.spring.data.service.UserIdentity;
 import ntou.auction.spring.data.service.UserService;
 import org.springframework.http.MediaType;
@@ -23,12 +24,14 @@ public class ProductController {
     private final ProductService productService;
     private final UserIdentity userIdentity;
     private final UserService userService;
+    private final ShoppingcartService shoppingcartService;
 
 
-    public ProductController(ProductService productService,UserIdentity userIdentity,UserService userService) {
+    public ProductController(ProductService productService, UserIdentity userIdentity, UserService userService, ShoppingcartService shoppingcartService) {
         this.productService = productService;
         this.userIdentity = userIdentity;
         this.userService = userService;
+        this.shoppingcartService = shoppingcartService;
     }
 
 
@@ -144,6 +147,59 @@ public class ProductController {
         productService.bid(request.getBid(), request.getProductID(),userService.findByUsername(userIdentity.getUsername()).getId());
 
         return ResponseEntity.ok(successMessage);
+    }
+
+    @PostMapping("/buy")
+    ResponseEntity<Map<String,String>> buyProduct(@Valid @RequestBody BuyProductRequest request){
+
+        Map<String,String> successMessage = Collections.singletonMap("message","成功加入購物車");
+        Map<String,String> notEnoughMessage = Collections.singletonMap("message","買太多嚕");
+        Map<String,String> errorMessage = Collections.singletonMap("message","你只能將不二價商品加入購物車");
+        Map<String, String> productNotExistMessage = Collections.singletonMap("message", "商品不存在或無法購買");
+
+        // 商品是否存在
+        if( productService.getID(request.getProductID())==null){
+            return ResponseEntity.badRequest().body(productNotExistMessage);
+        }
+
+        // 購物車是空的
+        // 只檢查request送來的加入數量
+        if (shoppingcartService.getByUserId(userService.findByUsername(userIdentity.getUsername()).getId())==null){
+            if (request.getProductAmount() > productService.getID(request.getProductID()).getProductAmount()) {
+                return ResponseEntity.badRequest().body(notEnoughMessage);
+            } else {
+                shoppingcartService.addProductByUserId(userService.findByUsername(userIdentity.getUsername()).getId(), request.getProductID(), request.getProductAmount());
+                return ResponseEntity.ok(successMessage);
+            }
+        }
+        // 購物車裡面還沒有要加入的商品
+        // 只檢查request送來的加入數量
+        if(shoppingcartService.getByUserId(userService.findByUsername(userIdentity.getUsername()).getId()).getProductItems().get(request.getProductID())==null){
+            if (request.getProductAmount() > productService.getID(request.getProductID()).getProductAmount()) {
+                return ResponseEntity.badRequest().body(notEnoughMessage);
+            } else {
+                shoppingcartService.addProductByUserId(userService.findByUsername(userIdentity.getUsername()).getId(), request.getProductID(), request.getProductAmount());
+                return ResponseEntity.ok(successMessage);
+            }
+        }
+
+        // 購物車裡面已經有要加入的商品
+        // 檢查request送來的加入數量加上原先購物車內的商品數量
+        if (request.getProductAmount() + shoppingcartService.getByUserId(userService.findByUsername(userIdentity.getUsername()).getId()).getProductItems().get(request.getProductID()) > productService.getID(request.getProductID()).getProductAmount()) { //要買的數量 > 商品剩餘數量
+            return ResponseEntity.badRequest().body(notEnoughMessage);
+        }
+        if(!productService.getID(request.getProductID()).getIsFixedPrice()){
+            return ResponseEntity.badRequest().body(errorMessage);
+        }
+        //public void addProductByUserId(Long userId, Long productId, Long amount) {
+        shoppingcartService.addProductByUserId(userService.findByUsername(userIdentity.getUsername()).getId(), request.getProductID(), request.getProductAmount());
+        return ResponseEntity.ok(successMessage);
+    }
+
+    @GetMapping("/sellercenter")
+    @ResponseBody
+    List<Product> getProductInSellerCenter() {
+        return productService.findBySellerID(userService.findByUsername(userIdentity.getUsername()).getId());
     }
 
 }

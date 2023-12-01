@@ -80,4 +80,6 @@ public class ProductService {
     public List<Product> findByProductNonFixed(){
         return repository.findAllByIsFixedPriceFalse();
     }
+
+    public List<Product> findBySellerID(Long sellerID){return repository.findBySellerID(sellerID);}//賣家中心
 }
