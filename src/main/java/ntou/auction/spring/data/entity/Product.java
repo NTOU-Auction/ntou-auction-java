@@ -53,6 +53,8 @@ public class Product extends AbstractEntity {
 
     private Long bidIncrement;
 
+    private Boolean isAuction; //競標商品已經被加進購物車?
+
     @NotNull
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
