@@ -4,7 +4,6 @@ import ntou.auction.spring.data.entity.Product;
 import ntou.auction.spring.data.entity.Shoppingcart;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,9 +12,11 @@ import java.util.Map;
 @Service
 public class ShoppingcartService {
     private final ShoppingcartRepository repository;
+    private final ProductService productService;
 
-    public ShoppingcartService(ShoppingcartRepository repository) {
+    public ShoppingcartService(ShoppingcartRepository repository, ProductService productService) {
         this.repository = repository;
+        this.productService = productService;
     }
 
     public Shoppingcart getByUserId(Long userId) {
@@ -41,7 +42,7 @@ public class ShoppingcartService {
         return true;
     }
 
-    public void addProductByUserId(Long userId, Long productId, Long amount) {
+    public boolean addProductByUserId(Long userId, Long productId, Long amount) {
         Shoppingcart userShoppingcart = getByUserId(userId);
         if (userShoppingcart == null) {
             Map<Long, Long> product = new HashMap<>();
@@ -49,25 +50,30 @@ public class ShoppingcartService {
             repository.save(newShoppingcart);
             userShoppingcart = getByUserId(userId);
         }
+        Product product = productService.getID(productId);
+        if (product == null) return false; //already been checked
+        Long alreadyAmount = userShoppingcart.getProductItems().get(productId) == null ? 0L : userShoppingcart.getProductItems().get(productId);
+        if (alreadyAmount + amount > product.getProductAmount()) return false;
         userShoppingcart.addProductId(productId, amount);
         repository.save(userShoppingcart);
+        return true;
     }
 
-    public boolean decreaseProductByUserId(Long userId, Long productId, Long amount) {
+    public Long decreaseProductByUserId(Long userId, Long productId, Long amount) {
         Shoppingcart userShoppingcart = getByUserId(userId);
-        if (userShoppingcart == null) return false;
-        boolean result = userShoppingcart.decreaseProduct(productId, amount);
-        if (!result) return false;
+        if (userShoppingcart == null) return 0L;
+        Long result = userShoppingcart.decreaseProduct(productId, amount);
+        if (!result.equals(2L)) return result;
         repository.save(userShoppingcart);
         if (userShoppingcart.getProductItems().isEmpty()) repository.deleteByUserid(userId);
-        return true;
+        return 2L;
     }
 
     public boolean deleteProductByUserId(Long userId, Long productId) {
         Shoppingcart userShoppingcart = getByUserId(userId);
         if (userShoppingcart == null) return false;
         boolean result = userShoppingcart.deleteProduct(productId);
-        if(!result) return false;
+        if (!result) return false;
         repository.save(userShoppingcart);
         if (userShoppingcart.getProductItems().isEmpty()) repository.deleteByUserid(userId);
         return true;

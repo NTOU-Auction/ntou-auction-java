@@ -19,7 +19,13 @@ public class ShoppingcartController {
     private final ShoppingcartService shoppingcartService;
     private final ProductService productService;
     private static final Map<String,String> successMessage = Collections.singletonMap("message","成功");
-    private static final Map<String,String> failMessage = Collections.singletonMap("message","好像發生了什麼錯誤，請檢查一下腦袋");
+    private static final Map<String,String> failMessage = Collections.singletonMap("message","操作失敗");
+
+    private static final Map<String,String> ErrorIdMessage = Collections.singletonMap("message","商品不存在");
+
+    private static final Map<String,String> ErrorAmountZeroMessage = Collections.singletonMap("message","商品數量不可變為負的");
+
+    private static final Map<String,String> ErrorAmountExceedMessage = Collections.singletonMap("message","商品數量過多");
 
     private final UserService userService;
 
@@ -31,11 +37,12 @@ public class ShoppingcartController {
         this.userService = userService;
         this.userIdentity = userIdentity;
     }
-    @GetMapping("/shoppingcart")
+    /*
+    @GetMapping("/view")
     @ResponseBody
     List<Shoppingcart> getShoppingcartProfile() { return shoppingcartService.list(); }
-
-    @GetMapping("/view")
+    */
+    @GetMapping("/shoppingcart")
     @ResponseBody
     ProductClassificatedBySeller getProduct() {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
@@ -62,14 +69,14 @@ public class ShoppingcartController {
         }
         return new ProductClassificatedBySeller(result);
     }
-    @PostMapping("/add")
+    @PostMapping("/increase")
     ResponseEntity<Map<String,String>> addProduct(@Valid @RequestBody ShoppingcartRequest request) {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         Long addProductId = request.getProductId();
         Long amount = request.getAmount();
-        if(productService.getID(addProductId)==null) return ResponseEntity.badRequest().body(failMessage);
-        shoppingcartService.addProductByUserId(userId, addProductId, amount==null?1L:amount);
-        return ResponseEntity.ok(successMessage);
+        if(productService.getID(addProductId)==null) return ResponseEntity.badRequest().body(ErrorIdMessage);
+        boolean result = shoppingcartService.addProductByUserId(userId, addProductId, amount==null?1L:amount);
+        return result?ResponseEntity.ok(successMessage):ResponseEntity.badRequest().body(ErrorAmountExceedMessage);
     }
 
     @DeleteMapping("/decrease")
@@ -77,16 +84,20 @@ public class ShoppingcartController {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         Long addProductId = request.getProductId();
         Long amount = request.getAmount();
-        boolean result = shoppingcartService.decreaseProductByUserId(userId, addProductId, amount==null?1L:amount);
-        return (result?ResponseEntity.ok(successMessage):ResponseEntity.badRequest().body(failMessage));
+        Long result = shoppingcartService.decreaseProductByUserId(userId, addProductId, amount==null?1L:amount);
+        // 0: exist error, 1: amount error, 2: OK
+        if(result.equals(0L)) return ResponseEntity.badRequest().body(ErrorIdMessage); //shoppingcart does not exist
+        if(result.equals(1L)) return ResponseEntity.badRequest().body(ErrorAmountZeroMessage); //amount error
+        return ResponseEntity.ok(successMessage);
     }
+
 
     @DeleteMapping("/delete")
     ResponseEntity<Map<String,String>> deleteProduct(@Valid @RequestBody ShoppingcartRequest request) {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         Long addProductId = request.getProductId();
         boolean result = shoppingcartService.deleteProductByUserId(userId, addProductId);
-        return (result?ResponseEntity.ok(successMessage):ResponseEntity.badRequest().body(failMessage));
+        return (result?ResponseEntity.ok(successMessage):ResponseEntity.badRequest().body(ErrorIdMessage));
     }
 
     @DeleteMapping("/deleteall")
