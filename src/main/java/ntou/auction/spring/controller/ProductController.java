@@ -84,6 +84,7 @@ public class ProductController {
         product.setUpsetPrice(null);
         product.setBidIncrement(null);
         product.setProductAmount(request.getProductAmount());
+        product.setIsAuction(false);
         product.setSellerID(userService.findByUsername(userIdentity.getUsername()).getId());
 
         product.setUpdateTime(LocalDateTime.now());
@@ -110,6 +111,7 @@ public class ProductController {
         product.setUpsetPrice(request.getUpsetPrice());
         product.setBidIncrement(request.getBidIncrement());
         product.setProductAmount(1L);
+        product.setIsAuction(false);
 
         LocalDateTime now = LocalDateTime.now();
 
