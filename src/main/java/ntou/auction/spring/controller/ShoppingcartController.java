@@ -19,13 +19,13 @@ public class ShoppingcartController {
     private final ShoppingcartService shoppingcartService;
     private final ProductService productService;
     private static final Map<String,String> successMessage = Collections.singletonMap("message","成功");
-    private static final Map<String,String> failMessage = Collections.singletonMap("message","好像發生了什麼錯誤，請檢查一下腦袋");
+    private static final Map<String,String> failMessage = Collections.singletonMap("message","操作失敗");
 
-    private static final Map<String,String> ErrorIdMessage = Collections.singletonMap("message","沒這商品，跟你女友一樣不存在");
+    private static final Map<String,String> ErrorIdMessage = Collections.singletonMap("message","商品不存在");
 
-    private static final Map<String,String> ErrorAmountZeroMessage = Collections.singletonMap("message","你知道這商品的數量會變得跟你腦袋一樣是負的嗎");
+    private static final Map<String,String> ErrorAmountZeroMessage = Collections.singletonMap("message","商品數量不可變為負的");
 
-    private static final Map<String,String> ErrorAmountExceedMessage = Collections.singletonMap("message","商品滿書來了");
+    private static final Map<String,String> ErrorAmountExceedMessage = Collections.singletonMap("message","商品數量過多");
 
     private final UserService userService;
 
