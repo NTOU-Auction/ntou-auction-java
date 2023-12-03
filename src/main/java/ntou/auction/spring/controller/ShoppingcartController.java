@@ -37,11 +37,12 @@ public class ShoppingcartController {
         this.userService = userService;
         this.userIdentity = userIdentity;
     }
-    @GetMapping("/shoppingcart")
+    /*
+    @GetMapping("/view")
     @ResponseBody
     List<Shoppingcart> getShoppingcartProfile() { return shoppingcartService.list(); }
-
-    @GetMapping("/view")
+    */
+    @GetMapping("/shoppingcart")
     @ResponseBody
     ProductClassificatedBySeller getProduct() {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
@@ -68,7 +69,7 @@ public class ShoppingcartController {
         }
         return new ProductClassificatedBySeller(result);
     }
-    @PostMapping("/add")
+    @PostMapping("/increase")
     ResponseEntity<Map<String,String>> addProduct(@Valid @RequestBody ShoppingcartRequest request) {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         Long addProductId = request.getProductId();
