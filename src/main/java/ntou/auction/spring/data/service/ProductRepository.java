@@ -15,7 +15,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
 
     Product findByProductName(String productName);
 
-    List <Product> findAllByIsFixedPriceFalse();
+    List <Product> findAllByIsFixedPriceFalseAndIsAuctionFalse();
 
     Product findById(long id);
 
@@ -24,7 +24,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
     List<Product> findAllByFuzzyProductName(@Param("productName") String productName);
     // ?1:productName
 
-
+    List<Product> findBySellerID(long ID);
 
     List<Product> findAllByProductType(String productType);
 

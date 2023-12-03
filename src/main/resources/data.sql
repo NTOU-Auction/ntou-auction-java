@@ -18,7 +18,7 @@ insert into user_roles (user_id, roles)
 values (1, 'ADMIN');
 
 insert into product (version,id,product_name,product_type,is_fixed_price,product_description,sellerid,upset_price,product_amount,current_price,update_time,finish_time,bid_increment,product_image)
-values (1,1,'IPhone13','electronic',true,'ggggg',1057088,null,3,1500,"2023-11-04 19:45:00",null,null,null);
+values (1,1,'IPhone13','electronic',true,'ggggg',1,null,3,1500,"2023-11-04 19:45:00",null,null,null);
 
 
 
@@ -28,7 +28,7 @@ values (1,2,'IPhone18','electronic',true,'ggggg',1057088,null,3,1500,"2023-11-04
 */
 
 insert into product (version,id,product_name,product_type,is_fixed_price,product_description,sellerid,upset_price,product_amount,current_price,update_time,finish_time,bid_increment,product_image)
-values (1,3,'IPhone13','electronic',false,'ggggg',1057088,1000,1,1500,"2023-11-04 19:45:00","2023-11-04 20:45:00",1000,null);
+values (1,3,'IPhone13','electronic',false,'ggggg',1,1000,1,1500,"2023-11-04 19:45:00","2023-11-04 20:45:00",1000,null);
 
 insert into product (version,id,product_name,product_type,is_fixed_price,product_description,sellerid,upset_price,product_amount,current_price,update_time,finish_time,bid_increment,product_image)
-values (1,4,'IPhone13','electronic',false,'ggggg',1057088,1000,1,1500,"2023-11-04 19:45:00","2023-11-30 18:45:00",1000,null);
+values (1,4,'IPhone13','electronic',false,'ggggg',1,1000,1,1500,"2023-11-04 19:45:00","2023-11-30 18:45:00",1000,null);
