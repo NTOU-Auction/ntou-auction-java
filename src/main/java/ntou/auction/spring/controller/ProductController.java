@@ -86,6 +86,7 @@ public class ProductController {
         product.setProductAmount(request.getProductAmount());
         product.setIsAuction(false);
         product.setSellerID(userService.findByUsername(userIdentity.getUsername()).getId());
+        product.setSellerName(userIdentity.getUsername());
 
         product.setUpdateTime(LocalDateTime.now());
 
@@ -116,6 +117,7 @@ public class ProductController {
         LocalDateTime now = LocalDateTime.now();
 
         product.setSellerID(userService.findByUsername(userIdentity.getUsername()).getId());
+        product.setSellerName(userIdentity.getUsername());
         product.setUpdateTime(now);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
