@@ -17,16 +17,17 @@ public interface ProductRepository extends JpaRepository<Product, Long>,
 
     List <Product> findAllByIsFixedPriceFalseAndIsAuctionFalse();
 
+    List <Product> findAllByVisibleTrue();
     Product findById(long id);
 
     @Query("select p from Product p " +
-            "where p.productName like %?1%") //string-like
+            "where p.productName like %?1% and p.visible = true") //string-like
     List<Product> findAllByFuzzyProductName(@Param("productName") String productName);
     // ?1:productName
 
     List<Product> findBySellerID(long ID);
 
-    List<Product> findAllByProductType(String productType);
+    List<Product> findAllByProductTypeAndVisibleTrue(String productType);
 
 
 }
