@@ -85,6 +85,7 @@ public class ProductController {
         product.setBidIncrement(null);
         product.setProductAmount(request.getProductAmount());
         product.setIsAuction(false);
+        product.setVisible(true);
         product.setSellerID(userService.findByUsername(userIdentity.getUsername()).getId());
         product.setSellerName(userIdentity.getUsername());
 
@@ -113,6 +114,7 @@ public class ProductController {
         product.setBidIncrement(request.getBidIncrement());
         product.setProductAmount(1L);
         product.setIsAuction(false);
+        product.setVisible(true);
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -149,6 +151,17 @@ public class ProductController {
         }
         System.out.println(userIdentity.getUsername());
         productService.bid(request.getBid(), request.getProductID(),userService.findByUsername(userIdentity.getUsername()).getId());
+
+        return ResponseEntity.ok(successMessage);
+    }
+
+    @DeleteMapping("/{ID}")
+    ResponseEntity<Map<String,String>> deleteProduct(@PathVariable long ID){
+        Map<String,String> successMessage = Collections.singletonMap("message","成功刪除");
+
+        Product p = productService.getID(ID);
+        p.setVisible(false);
+        productService.store(p);
 
         return ResponseEntity.ok(successMessage);
     }
