@@ -31,7 +31,7 @@ public class OrderController {
 
     private static final Map<String, String> orderNotFound = Collections.singletonMap("message", "訂單不存在");
 
-    private static final Map<String, String> statusError = Collections.singletonMap("message", "該狀態下無法進行操作");
+    private static final Map<String, String> statusError = Collections.singletonMap("message", "無法對目前訂單進行操作");
 
     private static final Map<String, String> identityError = Collections.singletonMap("message", "該狀身分下無法進行操作");
 
@@ -66,7 +66,7 @@ public class OrderController {
         return orderService.orderToOrderWithProductDetail(orderService.findWaitingByBuyerId(userId));
     }
 
-    @GetMapping("/order/submit")
+    @GetMapping("/order/accept")
     List<OrderWithProductDetail> getSubmitByBuyer() {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         return orderService.orderToOrderWithProductDetail(orderService.findSubmittedByBuyerId(userId));
