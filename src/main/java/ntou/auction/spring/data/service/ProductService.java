@@ -1,11 +1,10 @@
 package ntou.auction.spring.data.service;
+import jakarta.validation.constraints.Null;
 import ntou.auction.spring.data.entity.Product;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -40,7 +39,7 @@ public class ProductService {
 
     public Product getID(Long id){
         return repository.findById(id).orElse(null);
-    };
+    }
 
     public int count() {
         return (int) repository.count();
@@ -50,18 +49,49 @@ public class ProductService {
         repository.save(product);
     }
 
-/*
-    public boolean isProductNameNonExist(String productName) {
-        return repository.findByProductName(productName) == null;
+
+    public boolean isBidReasonable(Long bid, Long id) {
+        Product pr = this.getID(id);
+        if(pr.getCurrentPrice().equals(pr.getUpsetPrice()) && bid >= pr.getUpsetPrice() && pr.getBidInfo().isEmpty()){
+            return true;
+        }
+        return (bid - pr.getCurrentPrice()) >= pr.getBidIncrement();
     }
-*/
+    public void bid(Long bid,Long id,Long userID){
+        if (this.isBidReasonable(bid,id)){
+            System.out.println("合理");
+            Product product = this.getID(id);
+            product.setCurrentPrice(bid);
+            Map<Long,Long> bidInfo = product.getBidInfo();
+            bidInfo.put(userID,bid);
+            this.store(product);
+        }
+    }
+
+    public void productAmountDecrease(Long id,Long decrement){
+        Product product = this.getID(id);
+        Long productAmount = product.getProductAmount();
+        product.setProductAmount(productAmount - decrement);
+        this.store(product);
+    }
+    public void productAmountIncrease(Long id,Long increment){
+        Product product = this.getID(id);
+        Long productAmount = product.getProductAmount();
+        product.setProductAmount(productAmount + increment);
+        this.store(product);
+    }
 
     public List<Product> findByProductName(String productName) {
         return repository.findAllByFuzzyProductName(productName);
     }
 
     public List<Product> findByProductClassification(String productType){
-        return repository.findByProductType(productType);
+        return repository.findAllByProductType(productType);
     }
 
+    public List<Product> findByProductNonFixed(){
+        return repository.findAllByIsFixedPriceFalseAndIsAuctionFalse();
+    }
+
+    public List<Product> findBySellerID(Long sellerID){return repository.findBySellerID(sellerID);}//賣家中心
 }
