@@ -33,4 +33,6 @@ public class AppConfig {
     // The default image size limit for new sign-up users
     private int newSignupImageSizeLimit;
 
+    private String mailUsername;
+
 }
