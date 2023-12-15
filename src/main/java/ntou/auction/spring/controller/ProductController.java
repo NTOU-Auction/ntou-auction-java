@@ -36,25 +36,17 @@ public class ProductController {
     }
 
 
-    @GetMapping("/product")
+    @GetMapping("/product/{name}")
     @ResponseBody
-    public List<Product>getProductName(@Valid @RequestBody ProductRequestGet request) {
-
-        long type =Integer.parseInt(request.getSearchType());
-
-        if(type == 1) { //find by name
-            String pn = request.getProductName();
-            return productService.findByProductName(pn);
-        }
-
-        else if(type == 2){ //find by classification
-            String pt = request.getProductType();
-            return productService.findByProductClassification(pt);
-        }
-
-        return productService.list();
+    public List<Product>getProductName(@PathVariable String name ) {
+            return productService.findByProductName(name);
     }
 
+    @GetMapping("/product/{classification}")
+    @ResponseBody
+    public List<Product>getProductClassification(@PathVariable String classification) {
+        return productService.findByProductClassification(classification);
+    }
 
     @GetMapping("/products")
     @ResponseBody
