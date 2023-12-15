@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 @RestController
@@ -155,16 +156,7 @@ public class ProductController {
         return ResponseEntity.ok(successMessage);
     }
 
-    @DeleteMapping("/{ID}")
-    ResponseEntity<Map<String,String>> deleteProduct(@PathVariable long ID){
-        Map<String,String> successMessage = Collections.singletonMap("message","成功刪除");
 
-        Product p = productService.getID(ID);
-        p.setVisible(false);
-        productService.store(p);
-
-        return ResponseEntity.ok(successMessage);
-    }
 
     @PostMapping("/buy")
     ResponseEntity<Map<String,String>> buyProduct(@Valid @RequestBody BuyProductRequest request){
@@ -219,4 +211,75 @@ public class ProductController {
         return productService.findBySellerID(userService.findByUsername(userIdentity.getUsername()).getId());
     }
 
+    @DeleteMapping("/{ID}")
+    ResponseEntity<Map<String,String>> deleteProduct(@PathVariable long ID){
+        Map<String,String> successMessage = Collections.singletonMap("message","成功刪除");
+
+        Product p = productService.getID(ID);
+        p.setVisible(false);
+        productService.store(p);
+
+        return ResponseEntity.ok(successMessage);
+    }
+
+    @PutMapping("/fixedproduct/{ID}")
+    ResponseEntity<Map<String,String>> putFixedProduct(@PathVariable long ID , @Valid @RequestBody UpdateFixedPriceProductRequest request){
+
+        Map<String,String> successMessage = Collections.singletonMap("message","成功更新不二價商品");
+
+        Product product = productService.getID(ID);
+        product.setProductName(request.getProductName());
+        product.setProductDescription(request.getProductDescription());
+        product.setProductImage(request.getProductImage());
+        product.setProductType(request.getProductType());
+        product.setCurrentPrice(request.getCurrentPrice());
+        product.setProductAmount(request.getProductAmount());
+
+        productService.store(product);
+        return ResponseEntity.ok(successMessage);
+    }
+
+    @PutMapping("/nonfixedproduct/{ID}")
+    ResponseEntity<Map<String,String>> putNonFixedProduct(@PathVariable long ID , @Valid @RequestBody UpdateNonFixedPriceProductRequest request){
+
+        Map<String,String> successMessage = Collections.singletonMap("message","成功更新競標商品");
+        Map<String,String> failToPostponeAuction = Collections.singletonMap("message","延長競標截止時間失敗，因為有人得標嚕");
+        Map<String,String> fail = Collections.singletonMap("message","截止時間錯誤");
+        Map<String,String> failToSetUpsetPrice = Collections.singletonMap("message","底價不得更改，因為競標還在進行中");
+        Map<String,String> failToSetBidIncrement = Collections.singletonMap("message","每次增加金額不得更改，因為競標還在進行中");
+
+        Product product = productService.getID(ID);
+
+        product.setProductName(request.getProductName());
+        product.setProductDescription(request.getProductDescription());
+        product.setProductImage(request.getProductImage());
+        product.setProductType(request.getProductType());
+
+
+        Map<Long,Long> productMap= product.getBidInfo();
+        if(!productMap.isEmpty() && !Objects.equals(request.getUpsetPrice(), product.getUpsetPrice())){ //map不為空，有人出價過了。且更改的底價 != 原本底價
+            return ResponseEntity.badRequest().body(failToSetUpsetPrice);
+        }
+        product.setUpsetPrice(request.getUpsetPrice());
+
+        if(!productMap.isEmpty() && !Objects.equals(request.getBidIncrement(), product.getBidIncrement())){ //map不為空，有人出價過了。且被更改每口叫價
+            return ResponseEntity.badRequest().body(failToSetBidIncrement);
+        }
+        product.setBidIncrement(request.getBidIncrement());
+
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime dateTime = LocalDateTime.parse(request.getFinishTime(), formatter);
+        if(!now.isBefore(dateTime)){
+            return ResponseEntity.badRequest().body(fail);
+        }
+        if(product.getIsAuction()) { //代表競標結束且有被加入購物車
+            return ResponseEntity.badRequest().body(failToPostponeAuction);
+        }
+
+        product.setFinishTime(dateTime);
+
+        productService.store(product);
+        return ResponseEntity.ok(successMessage);
+    }
 }
