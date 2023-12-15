@@ -36,13 +36,13 @@ public class ProductController {
     }
 
 
-    @GetMapping("/product/{name}")
+    @GetMapping("/product/name/{name}")
     @ResponseBody
     public List<Product>getProductName(@PathVariable String name ) {
             return productService.findByProductName(name);
     }
 
-    @GetMapping("/product/{classification}")
+    @GetMapping("/product/classification/{classification}")
     @ResponseBody
     public List<Product>getProductClassification(@PathVariable String classification) {
         return productService.findByProductClassification(classification);
