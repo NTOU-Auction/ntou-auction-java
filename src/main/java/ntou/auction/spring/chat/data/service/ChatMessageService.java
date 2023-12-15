@@ -6,9 +6,7 @@ import ntou.auction.spring.chat.exception.MessageNotFound;
 import ntou.auction.spring.chat.repository.ChatMessageRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ChatMessageService {
@@ -66,5 +64,18 @@ public class ChatMessageService {
             chatMessage.setChatMessageStatus(status);
             repository.save(chatMessage);
         }
+    }
+
+    public Set<Long> getContact(Long userId){
+        List<ChatMessage> sendByUser = repository.findAllBySenderId(userId);
+        List<ChatMessage> receiveByUser = repository.findAllByReceiverId(userId);
+        Set<Long> contact = new HashSet<>();
+       for(ChatMessage message: sendByUser){
+           contact.add(message.getReceiverId());
+       }
+       for(ChatMessage message: receiveByUser){
+            contact.add(message.getSenderId());
+       }
+       return contact;
     }
 }
