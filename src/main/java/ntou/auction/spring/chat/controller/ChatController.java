@@ -94,4 +94,11 @@ public class ChatController {
         return ResponseEntity
                 .ok(chatMessageService.findChatMessages(userService.findByUsername(userIdentity.getUsername()).getId(), recipientId));
     }
+
+    @GetMapping("/api/v1/chat/contact")
+    public ResponseEntity<?> findContact() {
+        System.out.println(userIdentity.getUsername());
+        return ResponseEntity
+                .ok(chatMessageService.getContact(userService.findByUsername(userIdentity.getUsername()).getId()));
+    }
 }
