@@ -68,6 +68,18 @@ public class ProductService {
         }
     }
 
+    public void productAmountDecrease(Long id,Long decrement){
+        Product product = this.getID(id);
+        Long productAmount = product.getProductAmount();
+        product.setProductAmount(productAmount - decrement);
+        this.store(product);
+    }
+    public void productAmountIncrease(Long id,Long increment){
+        Product product = this.getID(id);
+        Long productAmount = product.getProductAmount();
+        product.setProductAmount(productAmount + increment);
+        this.store(product);
+    }
 
     public List<Product> findByProductName(String productName) {
         return repository.findAllByFuzzyProductName(productName);

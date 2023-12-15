@@ -78,4 +78,21 @@ public class ShoppingcartService {
         if (userShoppingcart.getProductItems().isEmpty()) repository.deleteByUserid(userId);
         return true;
     }
+
+    public boolean checkIsEnoughAmount(Long userId, Long productId, Long amount) {
+        Shoppingcart userShoppingcart = getByUserId(userId);
+        if (userShoppingcart == null) return false;
+        return userShoppingcart.checkIsEnoughAmountInProductItems(productId, amount);
+    }
+
+    public Long checkIsProductAllInShoppingCart(List<List<Long>> order, Long userid) {
+        // -1: format error, 0: false, 1: true
+        for(List<Long> product: order) {
+            if(product.size()!=2) return -1L;
+            if(!checkIsEnoughAmount(userid, product.get(0), product.get(1))) {
+                return 0L;
+            }
+        }
+        return 1L;
+    }
 }

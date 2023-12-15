@@ -38,6 +38,8 @@ public class Product extends AbstractEntity {
     @NotNull
     private Long sellerID;
 
+    private String sellerName;
+
     private Long productAmount;
 
     //followings are non-isFixedPrice feature
