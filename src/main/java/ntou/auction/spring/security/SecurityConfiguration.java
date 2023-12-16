@@ -81,6 +81,7 @@ public class SecurityConfiguration {
                         .requestMatchers( HttpMethod.GET,"/api/v1/product/**").permitAll()
                         .requestMatchers( HttpMethod.POST,"/api/v1/product/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/sockjs/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement((session) -> session
