@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:3000")
@@ -97,8 +100,14 @@ public class ChatController {
 
     @GetMapping("/api/v1/chat/contact")
     public ResponseEntity<?> findContact() {
-        System.out.println(userIdentity.getUsername());
+        Set<Long> contacts = chatMessageService.getContact(userService.findByUsername(userIdentity.getUsername()).getId());
+        Map<Long,String> contactList = new HashMap<>();
+        for(Long contactId: contacts){
+            if(userService.get(contactId).isPresent()) {
+                contactList.put(contactId, userService.get(contactId).get().getUsername());
+            }
+        }
         return ResponseEntity
-                .ok(chatMessageService.getContact(userService.findByUsername(userIdentity.getUsername()).getId()));
+                .ok(contactList);
     }
 }
