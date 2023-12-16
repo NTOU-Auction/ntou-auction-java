@@ -57,6 +57,8 @@ public class Product extends AbstractEntity {
 
     private Boolean isAuction; //競標商品已經被加進購物車?
 
+    private Boolean visible;
+
     @NotNull
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;

@@ -34,8 +34,8 @@ public class ProductService {
     }
 */
     public List<Product> list() {
-        return repository.findAll();
-    }
+        return repository.findAllByVisibleTrue();
+    } //browse homepage
 
     public Product getID(Long id){
         return repository.findById(id).orElse(null);
@@ -80,18 +80,23 @@ public class ProductService {
         product.setProductAmount(productAmount + increment);
         this.store(product);
     }
+    public void deleteProduct(Long id){
+        Product product = this.getID(id);
+        product.setVisible(false);
+        this.store(product);
+    }
 
     public List<Product> findByProductName(String productName) {
         return repository.findAllByFuzzyProductName(productName);
     }
 
     public List<Product> findByProductClassification(String productType){
-        return repository.findAllByProductType(productType);
+        return repository.findAllByProductTypeAndVisibleTrue(productType);
     }
 
     public List<Product> findByProductNonFixed(){
         return repository.findAllByIsFixedPriceFalseAndIsAuctionFalse();
     }
 
-    public List<Product> findBySellerID(Long sellerID){return repository.findBySellerID(sellerID);}//賣家中心
+    public List<Product> findBySellerID(Long sellerID){return repository.findBySellerIDAndVisibleTrue(sellerID);}//賣家中心
 }
