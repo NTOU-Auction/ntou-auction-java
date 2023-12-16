@@ -206,8 +206,14 @@ public class ProductController {
     @DeleteMapping("/{ID}")
     ResponseEntity<Map<String,String>> deleteProduct(@PathVariable long ID){
         Map<String,String> successMessage = Collections.singletonMap("message","成功刪除");
+        Map<String,String> failMessage = Collections.singletonMap("message","刪錯商品嚕");
 
         Product p = productService.getID(ID);
+
+        if(!Objects.equals(userService.findByUsername(userIdentity.getUsername()).getId(), p.getSellerID())){
+            return ResponseEntity.badRequest().body(failMessage);
+        }
+        p.setProductAmount(0L);
         p.setVisible(false);
         productService.store(p);
 
@@ -218,8 +224,12 @@ public class ProductController {
     ResponseEntity<Map<String,String>> putFixedProduct(@PathVariable long ID , @Valid @RequestBody UpdateFixedPriceProductRequest request){
 
         Map<String,String> successMessage = Collections.singletonMap("message","成功更新不二價商品");
+        Map<String,String> failMessage = Collections.singletonMap("message","更新錯商品嚕");
 
         Product product = productService.getID(ID);
+        if(!Objects.equals(userService.findByUsername(userIdentity.getUsername()).getId(), product.getSellerID())){
+            return ResponseEntity.badRequest().body(failMessage);
+        }
         product.setProductName(request.getProductName());
         product.setProductDescription(request.getProductDescription());
         product.setProductImage(request.getProductImage());
@@ -237,11 +247,14 @@ public class ProductController {
         Map<String,String> successMessage = Collections.singletonMap("message","成功更新競標商品");
         Map<String,String> failToPostponeAuction = Collections.singletonMap("message","延長競標截止時間失敗，因為有人得標嚕");
         Map<String,String> fail = Collections.singletonMap("message","截止時間錯誤");
-        Map<String,String> failToSetUpsetPrice = Collections.singletonMap("message","底價不得更改，因為競標還在進行中");
-        Map<String,String> failToSetBidIncrement = Collections.singletonMap("message","每次增加金額不得更改，因為競標還在進行中");
-
+        Map<String,String> failToSetUpsetPrice = Collections.singletonMap("message","底價不得更改，因為有人出價了");
+        Map<String,String> failToSetBidIncrement = Collections.singletonMap("message","每次增加金額不得更改，因為有人出價了");
+        Map<String,String> failMessage = Collections.singletonMap("message","更新錯商品嚕阿");
         Product product = productService.getID(ID);
 
+        if(!Objects.equals(userService.findByUsername(userIdentity.getUsername()).getId(), product.getSellerID())){
+            return ResponseEntity.badRequest().body(failMessage);
+        }
         product.setProductName(request.getProductName());
         product.setProductDescription(request.getProductDescription());
         product.setProductImage(request.getProductImage());
