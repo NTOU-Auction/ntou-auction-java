@@ -1,10 +1,7 @@
 package ntou.auction.spring.chat.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import ntou.auction.spring.security.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.messaging.converter.DefaultContentTypeResolver;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.converter.MessageConverter;
@@ -15,15 +12,16 @@ import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBr
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 
+import java.net.http.WebSocketHandshakeException;
 import java.util.List;
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+public class WebSocketMessageConfig implements WebSocketMessageBrokerConfigurer {
 
     private final AuthChannelInterceptor authChannelInterceptor;
 
-    public WebSocketConfig(AuthChannelInterceptor authChannelInterceptor) {
+    public WebSocketMessageConfig(AuthChannelInterceptor authChannelInterceptor) {
         this.authChannelInterceptor = authChannelInterceptor;
     }
 
@@ -39,8 +37,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/ws")
-                .setAllowedOrigins("*");
-                //.withSockJS();
+                .setAllowedOriginPatterns("*");
+        registry.addEndpoint("/sockjs")
+                .setAllowedOriginPatterns("*")
+                .withSockJS();
     }
 
     @Override
