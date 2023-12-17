@@ -1,6 +1,9 @@
 package ntou.auction.spring.data.service;
+
 import ntou.auction.spring.data.entity.User;
+
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,8 +19,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
 
-
-    public UserService(UserRepository repository,  PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -33,7 +35,7 @@ public class UserService {
     public void delete(Long id) {
         Optional<User> maybeUser = repository.findById(id);
         if (maybeUser.isPresent()) {
-            User user = maybeUser.get();
+            //User user = maybeUser.get();
             repository.deleteById(id);
         }
     }
@@ -66,8 +68,45 @@ public class UserService {
         return repository.findAllByEmail(email).isEmpty();
     }
 
-    public User findByUsername(String userName){
+    public User findByUsername(String userName) {
         return repository.findByUsername(userName);
     }
 
+    public Set<Long> getFavoriteProducts(Long userId) {
+        if (repository.findById(userId).isPresent()) {
+            return repository.findById(userId).get().getFavoriteProducts();
+        } else {
+            return null;
+        }
+    }
+
+    public boolean addFavoriteProducts(Long userId, Long productId) {
+        if (repository.findById(userId).isPresent()) {
+            User user = repository.findById(userId).get();
+            Set<Long> favoriteProducts = user.getFavoriteProducts();
+            if (!favoriteProducts.add(productId)) {
+                return false;
+            }
+            user.setFavoriteProducts(favoriteProducts);
+            repository.save(user);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean removeFavoriteProducts(Long userId, Long productId) {
+        if (repository.findById(userId).isPresent()) {
+            User user = repository.findById(userId).get();
+            Set<Long> favoriteProducts = user.getFavoriteProducts();
+            if (!favoriteProducts.remove(productId)) {
+                return false;
+            }
+            user.setFavoriteProducts(favoriteProducts);
+            repository.save(user);
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
