@@ -1,5 +1,6 @@
 package ntou.auction.spring.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import ntou.auction.spring.data.Role;
@@ -30,8 +31,12 @@ public class User extends AbstractEntity implements UserDetails {
     @Length(min = 1, max = 128, message = "暱稱長度限制為1~32位!")
     private String name;
 
+    @JsonIgnore
     @NotBlank(message = "密碼不可為空!")
     private String hashedPassword;
+
+    @JsonIgnore
+    private String password;
 
     @NotNull
     @Enumerated(EnumType.STRING)
