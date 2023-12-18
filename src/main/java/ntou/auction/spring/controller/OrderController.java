@@ -39,6 +39,8 @@ public class OrderController {
 
     private static final Map<String, String> notFoundInShoppingCartError = Collections.singletonMap("message", "商品不在購物車中或購買數量過多");
 
+    private static final Map<String, String> selfBuyingError = Collections.singletonMap("message", "不可以購買自己的商品");
+
     public OrderController(OrderService orderService, ProductService productService, ShoppingcartService shoppingcartService, UserService userService, UserIdentity userIdentity) {
         this.orderService = orderService;
         this.productService = productService;
@@ -66,10 +68,16 @@ public class OrderController {
         return orderService.orderToOrderWithProductDetail(orderService.findWaitingByBuyerId(userId));
     }
 
-    @GetMapping("/order/accept")
+    @GetMapping("/order/submitted")
     List<OrderWithProductDetail> getSubmitByBuyer() {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         return orderService.orderToOrderWithProductDetail(orderService.findSubmittedByBuyerId(userId));
+    }
+
+    @GetMapping("/order/done")
+    List<OrderWithProductDetail> getDoneByBuyer() {
+        Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
+        return orderService.orderToOrderWithProductDetail(orderService.findDoneByBuyerId(userId));
     }
 
     @GetMapping("/check")
@@ -83,10 +91,40 @@ public class OrderController {
     ResponseEntity<Map<String, String>> addOrder(@Valid @RequestBody AddOrderRequest request) {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         List<List<Long>> getrequest = request.getProductList();
-        // check -> -1: format error, 0: false, 1: true
-        Long check = shoppingcartService.checkIsProductAllInShoppingCart(getrequest, userId);
-        if(check.equals(-1L)) return ResponseEntity.badRequest().body(formatError);
-        if(check.equals(0L)) return ResponseEntity.badRequest().body(notFoundInShoppingCartError);
+
+        for (List<Long> eachProductAddAmount : getrequest) {
+            Long productId = eachProductAddAmount.get(0);
+            Product getProduct = productService.getID(productId);
+            // Id error
+            if (getProduct == null) {
+                Map<String, String> ErrorIdMessage = Collections.singletonMap("message", "商品(ID:" + productId + ")不存在");
+                return ResponseEntity.badRequest().body(ErrorIdMessage);
+            }
+        }
+
+        // checkInShoppingCart -> -1: format error, 0: false, 1: true
+        Long checkInShoppingCart = shoppingcartService.checkIsProductAllInShoppingCart(getrequest, userId);
+        if(checkInShoppingCart.equals(-1L)) return ResponseEntity.badRequest().body(formatError);
+        if(checkInShoppingCart.equals(0L)) return ResponseEntity.badRequest().body(notFoundInShoppingCartError);
+
+        for (List<Long> eachProductAddAmount : getrequest) {
+            Long productId = eachProductAddAmount.get(0);
+            Long amount = eachProductAddAmount.get(1);
+            Product getProduct = productService.getID(productId);
+            // amount exceed
+            if (amount > getProduct.getProductAmount()) {
+                Map<String, String> amountExceedReturn = Collections.singletonMap("message", "商品數量(" + getProduct.getProductName() + ")過多");
+                return ResponseEntity.badRequest().body(amountExceedReturn);
+            }
+        }
+
+        // Same seller
+        boolean checkSameSeller = orderService.checkIsSameSeller(getrequest);
+        if(!checkSameSeller) return ResponseEntity.badRequest().body(tooManySellerMessage);
+
+        // Self buying
+        boolean checkSelfBuying = shoppingcartService.checkIsViolateSelfBuying(getrequest, userId);
+        if(checkSelfBuying) return ResponseEntity.badRequest().body(selfBuyingError);
 
         // order status -> 0: reject, 1: waiting for submit, 2: submitted but not paid, 3: order done
         Order order = new Order();
@@ -98,30 +136,23 @@ public class OrderController {
             Long productId = eachProductAddAmount.get(0);
             Long amount = eachProductAddAmount.get(1);
             Product getProduct = productService.getID(productId);
-            // Id error
-            if (getProduct == null) {
-                Map<String, String> ErrorIdMessage = Collections.singletonMap("message", "商品(ID:" + productId + ")不存在");
-                return ResponseEntity.badRequest().body(ErrorIdMessage);
-            }
-            // amount exceed
-            if (amount > getProduct.getProductAmount()) {
-                Map<String, String> amountExceedReturn = Collections.singletonMap("message", "商品數量(" + getProduct.getProductName() + ")過多");
-                return ResponseEntity.badRequest().body(amountExceedReturn);
-            }
             order.setSellerid(getProduct.getSellerID());
             List<Long> input = new ArrayList<>();
             input.add(productId);
             input.add(amount);
             order.addProductAddAmount(input);
+        }
+        for (List<Long> eachProductAddAmount : getrequest) {
+            Long productId = eachProductAddAmount.get(0);
+            Long amount = eachProductAddAmount.get(1);
+
             // decrease product's amount by amount
             productService.productAmountDecrease(productId, amount);
+
+            // delete Product amount in Shopping cart
+            shoppingcartService.decreaseProductByUserId(userId, productId, amount);
         }
-        // delete Product amount in Shopping cart
-        for (List<Long> eachProductAddAmount : getrequest) {
-            shoppingcartService.decreaseProductByUserId(userId, eachProductAddAmount.get(0), eachProductAddAmount.get(1));
-        }
-        boolean result = orderService.addOrder(order);
-        if (!result) return ResponseEntity.badRequest().body(tooManySellerMessage);
+        orderService.addOrder(order);
         return ResponseEntity.ok(successMessage);
     }
 

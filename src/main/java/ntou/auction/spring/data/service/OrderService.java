@@ -101,14 +101,11 @@ public class OrderService {
         return 3L;
     }
 
-    public boolean addOrder(Order order) {
-        boolean check = checkIsSameSeller(order.getProductAddAmountList());
-        if(!check) return false;
+    public void addOrder(Order order) {
         repository.save(order);
-        return true;
     }
 
-    private boolean checkIsSameSeller(List<List<Long>> list) {
+    public boolean checkIsSameSeller(List<List<Long>> list) {
         Set<Long> check = new HashSet<>();
         for(List<Long> productAddAmount: list) {
             check.add(productService.getID(productAddAmount.get(0)).getSellerID());

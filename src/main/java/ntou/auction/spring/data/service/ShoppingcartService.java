@@ -4,10 +4,7 @@ import ntou.auction.spring.data.entity.Product;
 import ntou.auction.spring.data.entity.Shoppingcart;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class ShoppingcartService {
@@ -94,5 +91,13 @@ public class ShoppingcartService {
             }
         }
         return 1L;
+    }
+
+    public boolean checkIsViolateSelfBuying(List<List<Long>> order, Long userid) {
+        for(List<Long> product: order) {
+            Product nowProduct = productService.getID(product.get(0));
+            if(nowProduct.getSellerID().equals(userid)) return true;
+        }
+        return false;
     }
 }
