@@ -40,17 +40,21 @@ public class OrderService {
         return repository.findWaitingByBuyerid(buyerId);
     }
 
-    public List<Order> findSubmittedByBuyerId(Long buyerId) {
-        return repository.findSubmittedByBuyerid(buyerId);
-    }
+    public List<Order> findSubmittedByBuyerId(Long buyerId) {return repository.findSubmittedByBuyerid(buyerId);}
 
     public List<Order> findDoneByBuyerId(Long buyerId) {
         return repository.findDoneByBuyerid(buyerId);
     }
 
-    public List<Order> findWaitingBySellerId(Long sellerId) {
-        return repository.findWaitingBySellerid(sellerId);
-    }
+    public List<Order> findAllBySellerId(Long sellerId) { return repository.findAllBySellerid(sellerId);}
+
+    public List<Order> findRejectBySellerId(Long sellerId) { return repository.findRejectBySellerid(sellerId); }
+
+    public List<Order> findWaitingBySellerId(Long sellerId) { return repository.findWaitingBySellerid(sellerId);}
+
+    public List<Order> findSubmittedBySellerId(Long sellerId) { return repository.findSubmittedBySellerid(sellerId);}
+
+    public List<Order> findDoneBySellerId(Long sellerId) { return repository.findDoneBySellerid(sellerId);}
 
     public Long submitOrder(Long orderId, Long userId) {
         // for status -> 0: reject, 1: waiting for submit, 2: submitted but not paid, 3: order done
