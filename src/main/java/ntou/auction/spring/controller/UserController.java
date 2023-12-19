@@ -7,6 +7,7 @@ import ntou.auction.spring.data.entity.User;
 import ntou.auction.spring.data.service.ProductService;
 import ntou.auction.spring.data.service.UserIdentity;
 import ntou.auction.spring.data.service.UserService;
+import ntou.auction.spring.security.SignupRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -80,6 +81,39 @@ public class UserController {
         } else {
             return ResponseEntity.badRequest().body(failed);
         }
+    }
+
+    @PatchMapping("/users")
+    public ResponseEntity<Map<String, String>> signUp(@Valid @RequestBody SignupRequest request) {
+        String successMessage = "成功更新";
+        String usernameDuplicatedMessage = "更新失敗，輸入的帳號已被其他人使用!";
+        String emailDuplicatedMessage = "更新失敗，輸入的電子信箱已被其他人使用!";
+        String emailAndUsernameDuplicatedMessage = "更新失敗，輸入的帳號及電子信箱皆已被其他人使用!";
+        String passwordMessage = "至少需要8位密碼，且不超過128位";
+        Map<String, String> successResponse = Collections.singletonMap("message", successMessage);
+        Map<String, String> usernameDuplicatedResponse = Collections.singletonMap("message", usernameDuplicatedMessage);
+        Map<String, String> emailDuplicatedResponse = Collections.singletonMap("message", emailDuplicatedMessage);
+        Map<String, String> emailAndUsernameDuplicatedResponse = Collections.singletonMap("message", emailAndUsernameDuplicatedMessage);
+        Map<String, String> passwordResponse = Collections.singletonMap("message", passwordMessage);
+        User user = userService.findByUsername(userIdentity.getUsername());
+        user.setEmail(request.getEmail());
+        user.setUsername(request.getUsername());
+        user.setName(request.getName());
+        if(request.getPassword().length() < 8 || request.getPassword().length() > 128){
+            return ResponseEntity.badRequest().body(passwordResponse);
+        }
+        user.setHashedPassword(userService.getPasswordEncoder().encode(request.getPassword()));
+        if(!userService.isUsernameNonExist(request.getUsername())){
+            if(!userService.isEmailNonExist(request.getEmail())){
+                return ResponseEntity.badRequest().body(emailAndUsernameDuplicatedResponse);
+            }
+            return ResponseEntity.badRequest().body(usernameDuplicatedResponse);
+        }
+        if(!userService.isEmailNonExist(request.getEmail())){
+            return ResponseEntity.badRequest().body(emailDuplicatedResponse);
+        }
+        userService.update(user);
+        return ResponseEntity.ok(successResponse);
     }
 
 }
