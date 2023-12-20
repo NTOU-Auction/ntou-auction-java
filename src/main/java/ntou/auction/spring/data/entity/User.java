@@ -1,15 +1,9 @@
 package ntou.auction.spring.data.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import ntou.auction.spring.data.Role;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Lob;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -37,8 +31,12 @@ public class User extends AbstractEntity implements UserDetails {
     @Length(min = 1, max = 128, message = "暱稱長度限制為1~32位!")
     private String name;
 
+    @JsonIgnore
     @NotBlank(message = "密碼不可為空!")
     private String hashedPassword;
+
+    @JsonIgnore
+    private String password;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -51,6 +49,10 @@ public class User extends AbstractEntity implements UserDetails {
     private byte[] avatarImage;
 
     private String avatarImageName;
+
+    @ElementCollection
+    @CollectionTable(name = "favorite_products")
+    private Set<Long> favoriteProducts;
 
     @NotBlank(message = "電子信箱不可為空!")
     @Email(message = "電子信箱格式錯誤!")
