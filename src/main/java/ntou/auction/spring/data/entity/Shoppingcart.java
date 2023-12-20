@@ -52,4 +52,10 @@ public class Shoppingcart extends AbstractEntity {
         productItems.remove(product);
         return true;
     }
+
+    public boolean checkIsEnoughAmountInProductItems(Long product, Long amount) {
+        if(amount.equals(0L)) return true; // this may not be happened
+        if(!productItems.containsKey(product)) return false;
+        return productItems.get(product) >= amount;
+    }
 }
