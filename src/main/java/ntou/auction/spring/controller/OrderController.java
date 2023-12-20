@@ -80,12 +80,37 @@ public class OrderController {
         return orderService.orderToOrderWithProductDetail(orderService.findDoneByBuyerId(userId));
     }
 
-    @GetMapping("/check")
+    @GetMapping("/check/all")
+    List<OrderWithProductDetail> getAllBySeller() {
+        Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
+        return orderService.orderToOrderWithProductDetail(orderService.findAllBySellerId(userId));
+    }
+
+    @GetMapping("/check/reject")
+    List<OrderWithProductDetail> getRejectBySeller() {
+        Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
+        return orderService.orderToOrderWithProductDetail(orderService.findRejectBySellerId(userId));
+    }
+
+    @GetMapping("/check/waiting")
     List<OrderWithProductDetail> getWaitingBySeller() {
         // filter Waited order with seller
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         return orderService.orderToOrderWithProductDetail(orderService.findWaitingBySellerId(userId));
     }
+
+    @GetMapping("/check/submitted")
+    List<OrderWithProductDetail> getSubmittedBySeller() {
+        Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
+        return orderService.orderToOrderWithProductDetail(orderService.findSubmittedBySellerId(userId));
+    }
+
+    @GetMapping("/check/done")
+    List<OrderWithProductDetail> getDoneBySeller() {
+        Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
+        return orderService.orderToOrderWithProductDetail(orderService.findDoneBySellerId(userId));
+    }
+
 
     @PostMapping("/create")
     ResponseEntity<Map<String, String>> addOrder(@Valid @RequestBody AddOrderRequest request) {
