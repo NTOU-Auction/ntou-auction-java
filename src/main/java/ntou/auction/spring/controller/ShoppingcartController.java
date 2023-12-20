@@ -25,7 +25,7 @@ public class ShoppingcartController {
 
     private static final Map<String,String> ErrorAmountZeroMessage = Collections.singletonMap("message","商品數量不可變為負的");
 
-    private static final Map<String,String> ErrorAmountExceedMessage = Collections.singletonMap("message","商品數量過多");
+    private static final Map<String,String> ErrorAmountExceedMessage = Collections.singletonMap("message","加入的商品數量過多");
 
     private final UserService userService;
 

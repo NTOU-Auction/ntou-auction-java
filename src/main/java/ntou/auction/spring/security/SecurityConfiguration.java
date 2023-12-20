@@ -70,16 +70,13 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/test/**").permitAll()
+                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/log-in").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/sign-up").permitAll()
-                        .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/account/users/**").authenticated()
-                        .requestMatchers(HttpMethod.GET, "/api/v1/account/users").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/account/users").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/api/v1/account/users/**").hasRole(String.valueOf(Role.ADMIN))
-                        .requestMatchers( HttpMethod.GET,"/api/v1/product/**").permitAll()
-                        .requestMatchers( HttpMethod.POST,"/api/v1/product/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/product/products").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/product/product/name").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/product/product/classification").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/product/{ID}").permitAll()
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/sockjs/**").permitAll()
                         .anyRequest().authenticated())
@@ -89,6 +86,7 @@ public class SecurityConfiguration {
                 );
         return http.build();
     }
+
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {

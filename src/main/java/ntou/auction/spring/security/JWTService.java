@@ -38,8 +38,8 @@ public class JWTService {
         authentication = authenticationManager.authenticate(authentication);
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         // millisecond
-        // 2 minute
-        long expireTime = 2 * 60 * 1000;
+        // one day
+        long expireTime = 1440 * 60 * 1000;
         Date current = new Date();
         Date expiration = new Date(current.getTime() + expireTime);
 

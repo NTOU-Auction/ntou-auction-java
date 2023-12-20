@@ -25,7 +25,7 @@ public class TimerTask {
 
         for (Product product : productList) {
             System.out.println(product.getId());
-            if (product.isExpired()) {
+            if (product.isExpired()) { //競標結束
                 Map<Long,Long> productMap= product.getBidInfo();
 
 
@@ -36,11 +36,6 @@ public class TimerTask {
                     product.setIsAuction(true);
                     productService.store(product);
                 }
-                else {
-                    product.setIsAuction(true);
-                    productService.store(product);
-                }
-
             }
         }
     }
