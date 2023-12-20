@@ -1,6 +1,7 @@
 package ntou.auction.spring.data.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -44,6 +45,7 @@ public class Product extends AbstractEntity {
 
     //followings are non-isFixedPrice feature
 
+    @JsonIgnore
     @ElementCollection
     @CollectionTable(name = "bidInfo")
     private Map<Long,Long> bidInfo;
