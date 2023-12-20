@@ -154,8 +154,8 @@ public class ProductController {
     ResponseEntity<Map<String,String>> buyProduct(@Valid @RequestBody BuyProductRequest request){
 
         Map<String,String> successMessage = Collections.singletonMap("message","成功加入購物車");
-        Map<String,String> notEnoughMessage = Collections.singletonMap("message","買太多嚕");
-        Map<String,String> errorMessage = Collections.singletonMap("message","你只能將不二價商品加入購物車");
+        Map<String,String> notEnoughMessage = Collections.singletonMap("message","商品剩餘數量不足");
+        Map<String,String> errorMessage = Collections.singletonMap("message","只能將不二價商品加入購物車");
         Map<String, String> productNotExistMessage = Collections.singletonMap("message", "商品不存在或無法購買");
 
         // 商品是否存在
