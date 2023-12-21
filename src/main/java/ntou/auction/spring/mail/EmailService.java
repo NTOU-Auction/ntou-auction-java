@@ -2,10 +2,10 @@ package ntou.auction.spring.mail;
 
 import jakarta.mail.Message;
 import jakarta.mail.internet.InternetAddress;
-import ntou.auction.spring.core.AppConfig;
-import ntou.auction.spring.data.entity.Product;
-import ntou.auction.spring.data.entity.User;
-import ntou.auction.spring.data.service.UserService;
+import ntou.auction.spring.util.AppConfig;
+import ntou.auction.spring.product.entity.Product;
+import ntou.auction.spring.account.entity.User;
+import ntou.auction.spring.account.service.UserService;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;

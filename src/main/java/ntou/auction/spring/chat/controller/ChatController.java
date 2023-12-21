@@ -1,12 +1,12 @@
 package ntou.auction.spring.chat.controller;
 
 
-import ntou.auction.spring.chat.data.entity.ChatMessage;
-import ntou.auction.spring.chat.data.entity.ChatNotification;
-import ntou.auction.spring.chat.data.service.ChatMessageService;
-import ntou.auction.spring.chat.data.service.ChatRoomService;
-import ntou.auction.spring.data.service.UserIdentity;
-import ntou.auction.spring.data.service.UserService;
+import ntou.auction.spring.chat.entity.ChatMessage;
+import ntou.auction.spring.chat.entity.ChatNotification;
+import ntou.auction.spring.chat.service.ChatMessageService;
+import ntou.auction.spring.chat.service.ChatRoomService;
+import ntou.auction.spring.account.response.UserIdentity;
+import ntou.auction.spring.account.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -45,13 +45,6 @@ public class ChatController {
 
     @MessageMapping("/send")
     public void sendMessage(@Payload ChatMessage chatMessage, Principal principal) {
-        /*
-        User sender = userService.findByUsername(userIdentity.getUsername());
-        ChatMessage message = new ChatMessage();
-        message.setSenderId(sender.getId());
-        message.setReceiverId(chatMessageRequest.getReceiverId());
-        message.setContent(chatMessageRequest.getContent());
-        */
 
         // token無效
         if (principal.getName() == null) {

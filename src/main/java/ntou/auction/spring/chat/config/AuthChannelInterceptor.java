@@ -1,8 +1,8 @@
 package ntou.auction.spring.chat.config;
 
 import io.micrometer.common.util.StringUtils;
-import ntou.auction.spring.security.JWTService;
-import ntou.auction.spring.security.UserDetailsServiceImpl;
+import ntou.auction.spring.account.service.JWTService;
+import ntou.auction.spring.account.service.UserDetailsServiceImpl;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.messaging.Message;
@@ -39,7 +39,7 @@ public class AuthChannelInterceptor implements ChannelInterceptor {
             List<String> header = accessor.getNativeHeader("Authorization");
             // header裡面有沒有token
             if (header != null && !header.isEmpty()) {
-                String token = header.get(0);
+                String token = header.getFirst();
                 if (StringUtils.isNotBlank(token)) {
                     String username = JWTService.validateTokenAndGetUsername(token);
                     System.out.println("username:" + username);
