@@ -1,6 +1,6 @@
 package ntou.auction.spring;
 
-import ntou.auction.spring.data.service.UserRepository;
+import ntou.auction.spring.account.repository.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;

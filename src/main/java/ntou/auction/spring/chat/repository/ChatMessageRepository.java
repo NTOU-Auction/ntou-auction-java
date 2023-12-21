@@ -2,11 +2,10 @@ package ntou.auction.spring.chat.repository;
 
 
 import jakarta.validation.constraints.NotNull;
-import ntou.auction.spring.chat.data.entity.ChatMessageStatus;
-import ntou.auction.spring.chat.data.entity.ChatMessage;
+import ntou.auction.spring.chat.entity.ChatMessageStatus;
+import ntou.auction.spring.chat.entity.ChatMessage;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
