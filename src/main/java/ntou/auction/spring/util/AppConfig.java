@@ -35,4 +35,6 @@ public class AppConfig {
 
     private String mailUsername;
 
+    private String JWTKey;
+
 }
