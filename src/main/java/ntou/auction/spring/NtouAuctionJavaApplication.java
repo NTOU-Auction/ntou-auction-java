@@ -1,15 +1,17 @@
 package ntou.auction.spring;
 
-import ntou.auction.spring.data.service.UserRepository;
+import ntou.auction.spring.account.repository.UserRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.sql.init.SqlDataSourceScriptDatabaseInitializer;
 import org.springframework.boot.autoconfigure.sql.init.SqlInitializationProperties;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.sql.DataSource;
 
 @SpringBootApplication
+@EnableScheduling
 public class NtouAuctionJavaApplication {
 
     public static void main(String[] args) {
