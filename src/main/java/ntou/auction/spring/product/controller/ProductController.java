@@ -128,7 +128,6 @@ public class ProductController {
     }
 
     @PatchMapping("/bid")
-        //商品ID 出價。出價也需傳入token
     ResponseEntity<Map<String, String>> bidProduct(@Valid @RequestBody BidRequest request) {
 
         Map<String, String> successMessage = Collections.singletonMap("message", "成功出價");
