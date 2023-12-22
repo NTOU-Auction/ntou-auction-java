@@ -22,7 +22,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/order", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000","https://ntou-auction.com","http://ntou-auction.com"})
 public class OrderController {
     private final OrderService orderService;
     private final ProductService productService;

@@ -19,7 +19,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/shoppingcart", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000","https://ntou-auction.com","http://ntou-auction.com"})
 public class ShoppingcartController {
     private final ShoppingcartService shoppingcartService;
     private final ProductService productService;
