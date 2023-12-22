@@ -1,5 +1,6 @@
 package ntou.auction.spring.order.service;
 
+import ntou.auction.spring.mail.EmailService;
 import ntou.auction.spring.order.entity.Order;
 import ntou.auction.spring.order.response.OrderWithProductDetail;
 import ntou.auction.spring.order.repository.OrderRepository;
@@ -20,13 +21,15 @@ public class OrderService {
     private final ProductService productService;
 
     private final ShoppingcartService shoppingcartService;
+    private final EmailService emailService;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public OrderService(OrderRepository repository, ProductService productService, ShoppingcartService shoppingcartService) {
+    public OrderService(OrderRepository repository, ProductService productService, ShoppingcartService shoppingcartService, EmailService emailService) {
         this.repository = repository;
         this.productService = productService;
         this.shoppingcartService = shoppingcartService;
+        this.emailService = emailService;
     }
     public Order findOrderById(Long Id) {
         return repository.findById(Id).orElse(null);
@@ -68,6 +71,7 @@ public class OrderService {
         if(!Objects.equals(findOrderById(orderId).getSellerid(), userId)) return 2L;
         getorder.setStatus(2L);
         repository.save(getorder);
+        emailService.sendMailOrderUpdate(getorder.getBuyerid(),getorder);
         return 3L;
     }
 
@@ -80,6 +84,7 @@ public class OrderService {
         if(!Objects.equals(findOrderById(orderId).getSellerid(), userId)) return 2L;
         getorder.setStatus(0L);
         repository.save(getorder);
+        emailService.sendMailOrderUpdate(getorder.getBuyerid(),getorder);
         return 3L;
     }
 

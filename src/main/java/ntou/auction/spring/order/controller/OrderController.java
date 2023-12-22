@@ -3,6 +3,7 @@ package ntou.auction.spring.order.controller;
 import jakarta.validation.Valid;
 import ntou.auction.spring.account.response.UserIdentity;
 import ntou.auction.spring.account.service.UserService;
+import ntou.auction.spring.mail.EmailService;
 import ntou.auction.spring.order.entity.Order;
 import ntou.auction.spring.order.request.AddOrderRequest;
 import ntou.auction.spring.order.request.OperateOrderRequest;
@@ -28,7 +29,7 @@ public class OrderController {
 
     private final ShoppingcartService shoppingcartService;
     private final UserService userService;
-
+    private final EmailService emailService;
     private final UserIdentity userIdentity;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -49,11 +50,12 @@ public class OrderController {
 
     private static final Map<String, String> selfBuyingError = Collections.singletonMap("message", "不可以購買自己的商品");
 
-    public OrderController(OrderService orderService, ProductService productService, ShoppingcartService shoppingcartService, UserService userService, UserIdentity userIdentity) {
+    public OrderController(OrderService orderService, ProductService productService, ShoppingcartService shoppingcartService, UserService userService, EmailService emailService, UserIdentity userIdentity) {
         this.orderService = orderService;
         this.productService = productService;
         this.shoppingcartService = shoppingcartService;
         this.userService = userService;
+        this.emailService = emailService;
         this.userIdentity = userIdentity;
     }
 
@@ -137,8 +139,8 @@ public class OrderController {
 
         // checkInShoppingCart -> -1: format error, 0: false, 1: true
         Long checkInShoppingCart = shoppingcartService.checkIsProductAllInShoppingCart(getrequest, userId);
-        if(checkInShoppingCart.equals(-1L)) return ResponseEntity.badRequest().body(formatError);
-        if(checkInShoppingCart.equals(0L)) return ResponseEntity.badRequest().body(notFoundInShoppingCartError);
+        if (checkInShoppingCart.equals(-1L)) return ResponseEntity.badRequest().body(formatError);
+        if (checkInShoppingCart.equals(0L)) return ResponseEntity.badRequest().body(notFoundInShoppingCartError);
 
         for (List<Long> eachProductAddAmount : getrequest) {
             Long productId = eachProductAddAmount.get(0);
@@ -153,11 +155,11 @@ public class OrderController {
 
         // Same seller
         boolean checkSameSeller = orderService.checkIsSameSeller(getrequest);
-        if(!checkSameSeller) return ResponseEntity.badRequest().body(tooManySellerMessage);
+        if (!checkSameSeller) return ResponseEntity.badRequest().body(tooManySellerMessage);
 
         // Self buying
         boolean checkSelfBuying = shoppingcartService.checkIsViolateSelfBuying(getrequest, userId);
-        if(checkSelfBuying) return ResponseEntity.badRequest().body(selfBuyingError);
+        if (checkSelfBuying) return ResponseEntity.badRequest().body(selfBuyingError);
 
         // order status -> 0: reject, 1: waiting for submit, 2: submitted but not paid, 3: order done
         Order order = new Order();
@@ -186,6 +188,7 @@ public class OrderController {
             shoppingcartService.decreaseProductByUserId(userId, productId, amount);
         }
         orderService.addOrder(order);
+        emailService.sendMailOrderEstablished(order.getBuyerid(),order);
         return ResponseEntity.ok(successMessage);
     }
 
@@ -244,7 +247,7 @@ public class OrderController {
         if (result.equals(-1L)) return ResponseEntity.badRequest().body(expiredError);
         Order thisOrder = orderService.findOrderById(orderId);
         boolean check = orderService.addAmountToProduct(thisOrder);
-        if(!check) return ResponseEntity.badRequest().body(orderNotFound); // this may not be happened
+        if (!check) return ResponseEntity.badRequest().body(orderNotFound); // this may not be happened
         return ResponseEntity.ok(successMessage);
     }
 }
