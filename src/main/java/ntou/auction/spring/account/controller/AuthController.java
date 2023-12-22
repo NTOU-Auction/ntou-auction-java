@@ -15,7 +15,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/auth", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+@CrossOrigin(origins = {"http://localhost:3000","https://ntou-auction.com","http://ntou-auction.com"}, allowCredentials = "true")
 public class AuthController {
 
     private final UserService userService;

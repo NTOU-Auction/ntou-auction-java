@@ -16,7 +16,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/account", produces = MediaType.APPLICATION_JSON_VALUE)
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000","https://ntou-auction.com","http://ntou-auction.com"})
 public class UserController {
     private final UserService userService;
 

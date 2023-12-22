@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Controller
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = {"http://localhost:3000","https://ntou-auction.com","http://ntou-auction.com"})
 public class ChatController {
 
     private final UserService userService;
