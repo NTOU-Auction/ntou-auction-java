@@ -25,7 +25,7 @@ public class Product extends AbstractEntity {
     private String productName;
 
 
-    @Length(min = 1, max = 32)
+    @Length(max = 32)
     private String productType;
 
 
@@ -33,7 +33,7 @@ public class Product extends AbstractEntity {
     private Boolean isFixedPrice;
 
 
-    @Length(min = 1, max = 20971520)
+    @Length(max = 20971520)
     private String productDescription;
 
     @NotNull
@@ -71,6 +71,7 @@ public class Product extends AbstractEntity {
     // if avatar is more than 5MB, need to modify column length
     @Lob
     @Column(length = 5242880)
+    @NotNull
     @Length(min = 1, max = 5242880)
     private String productImage;
 

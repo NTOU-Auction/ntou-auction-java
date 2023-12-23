@@ -23,14 +23,15 @@ public class UpdateFixedPriceProductRequest {
     private Long currentPrice;
 
 
-    @Length(min = 1, max = 32)
+    @Length(max = 32)
     private String productType;
 
-    @Length(min = 1, max = 20971520,message = "商品敘述過長")
+    @Length(max = 20971520,message = "商品敘述過長")
     private String productDescription;
 
     @Lob
     @Column(length = 5242880)
+    @NotNull(message="請上傳圖片")
     @Length(min = 1, max = 5242880 ,message = "圖片檔案過大，請重新上傳")
     private String productImage;
 
