@@ -50,8 +50,13 @@ public class UserController {
         Set<Long> favoriteProductIds = userService.getFavoriteProducts(userService.findByUsername(userIdentity.getUsername()).getId());
         List<Product> favoriteProducts = new ArrayList<>();
         for (Long favoriteProductId : favoriteProductIds) {
-            favoriteProducts.add(productService.getID(favoriteProductId));
+            if(!productService.getID(favoriteProductId).getVisible()){
+                favoriteProductIds.remove(favoriteProductId);
+            }else{
+                favoriteProducts.add(productService.getID(favoriteProductId));
+            }
         }
+        userService.setFavoriteProducts(userService.findByUsername(userIdentity.getUsername()).getId(),favoriteProductIds);
         return favoriteProducts;
     }
 
