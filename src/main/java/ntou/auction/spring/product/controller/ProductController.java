@@ -133,6 +133,12 @@ public class ProductController {
         Map<String, String> successMessage = Collections.singletonMap("message", "成功出價");
         Map<String, String> failMessage = Collections.singletonMap("message", "出價不合理，出價需比當前最高價高" + productService.getID(request.getProductID()).getBidIncrement());
         Map<String, String> expired = Collections.singletonMap("message", "競標已結束");
+        Map<String, String> violate = Collections.singletonMap("message", "不可以出價自己的商品");
+
+        if(Objects.equals(userService.findByUsername(userIdentity.getUsername()).getId(), productService.getID(request.getProductID()).getSellerID())){
+            return ResponseEntity.badRequest().body(violate);
+        }
+
 
         LocalDateTime now = LocalDateTime.now();
         if (!now.isBefore(productService.getID(request.getProductID()).getFinishTime())) {
@@ -156,6 +162,12 @@ public class ProductController {
         Map<String, String> notEnoughMessage = Collections.singletonMap("message", "商品剩餘數量不足");
         Map<String, String> errorMessage = Collections.singletonMap("message", "只能將不二價商品加入購物車");
         Map<String, String> productNotExistMessage = Collections.singletonMap("message", "商品不存在或無法購買");
+
+        Map<String, String> violate = Collections.singletonMap("message", "不可以買自己的商品");
+
+        if(Objects.equals(userService.findByUsername(userIdentity.getUsername()).getId(), productService.getID(request.getProductID()).getSellerID())){
+            return ResponseEntity.badRequest().body(violate);
+        }
 
         // 商品是否存在
         if (productService.getID(request.getProductID()) == null) {
