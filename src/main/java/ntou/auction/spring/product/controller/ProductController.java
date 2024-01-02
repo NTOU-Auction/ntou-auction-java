@@ -163,7 +163,7 @@ public class ProductController {
         Map<String, String> errorMessage = Collections.singletonMap("message", "只能將不二價商品加入購物車");
         Map<String, String> productNotExistMessage = Collections.singletonMap("message", "商品不存在或無法購買");
 
-        Map<String, String> violate = Collections.singletonMap("message", "不可以出價自己的商品");
+        Map<String, String> violate = Collections.singletonMap("message", "不可以買自己的商品");
 
         if(Objects.equals(userService.findByUsername(userIdentity.getUsername()).getId(), productService.getID(request.getProductID()).getSellerID())){
             return ResponseEntity.badRequest().body(violate);
