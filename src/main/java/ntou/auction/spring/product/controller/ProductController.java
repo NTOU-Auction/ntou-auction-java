@@ -133,6 +133,12 @@ public class ProductController {
         Map<String, String> successMessage = Collections.singletonMap("message", "成功出價");
         Map<String, String> failMessage = Collections.singletonMap("message", "出價不合理，出價需比當前最高價高" + productService.getID(request.getProductID()).getBidIncrement());
         Map<String, String> expired = Collections.singletonMap("message", "競標已結束");
+        Map<String, String> violate = Collections.singletonMap("message", "不可以出價自己的商品");
+
+        if(Objects.equals(userService.findByUsername(userIdentity.getUsername()).getId(), productService.getID(request.getProductID()).getSellerID())){
+            return ResponseEntity.badRequest().body(violate);
+        }
+
 
         LocalDateTime now = LocalDateTime.now();
         if (!now.isBefore(productService.getID(request.getProductID()).getFinishTime())) {
