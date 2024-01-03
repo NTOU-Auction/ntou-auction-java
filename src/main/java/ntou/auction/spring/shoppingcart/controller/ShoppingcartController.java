@@ -55,7 +55,6 @@ public class ShoppingcartController {
         if(userShoppingcart==null) return null;
         Map<String, List<ProductAddAmount>> result = new HashMap<>();
         for(Map.Entry<Long, Long> product: userShoppingcart.getProductItems().entrySet()) {
-            System.out.println(product.getKey() + " " + product.getValue());
             Product nowProduct = productService.getID(product.getKey());
             Long sellerId = nowProduct.getSellerID();
             Optional<User> sellerUser = userService.get(sellerId);
