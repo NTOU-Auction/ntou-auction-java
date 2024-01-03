@@ -81,6 +81,14 @@ public class UserService {
         }
     }
 
+    public void setFavoriteProducts(Long userId, Set<Long> newFavoriteProducts) {
+        if (repository.findById(userId).isPresent()) {
+            User user = repository.findById(userId).get();
+            user.setFavoriteProducts(newFavoriteProducts);
+            repository.save(user);
+        }
+    }
+
     public boolean addFavoriteProducts(Long userId, Long productId) {
         if (repository.findById(userId).isPresent()) {
             User user = repository.findById(userId).get();

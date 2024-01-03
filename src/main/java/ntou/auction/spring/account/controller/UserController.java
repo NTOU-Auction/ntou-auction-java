@@ -50,8 +50,13 @@ public class UserController {
         Set<Long> favoriteProductIds = userService.getFavoriteProducts(userService.findByUsername(userIdentity.getUsername()).getId());
         List<Product> favoriteProducts = new ArrayList<>();
         for (Long favoriteProductId : favoriteProductIds) {
-            favoriteProducts.add(productService.getID(favoriteProductId));
+            if(!productService.getID(favoriteProductId).getVisible()){
+                favoriteProductIds.remove(favoriteProductId);
+            }else{
+                favoriteProducts.add(productService.getID(favoriteProductId));
+            }
         }
+        userService.setFavoriteProducts(userService.findByUsername(userIdentity.getUsername()).getId(),favoriteProductIds);
         return favoriteProducts;
     }
 
@@ -86,32 +91,36 @@ public class UserController {
     @PatchMapping("/users")
     public ResponseEntity<Map<String, String>> signUp(@Valid @RequestBody SignupRequest request) {
         String successMessage = "成功更新";
-        String usernameDuplicatedMessage = "更新失敗，輸入的帳號已被其他人使用!";
+        String usernameNotAllowedMessage = "更新失敗，不可更新使用者帳號!";
         String emailDuplicatedMessage = "更新失敗，輸入的電子信箱已被其他人使用!";
-        String emailAndUsernameDuplicatedMessage = "更新失敗，輸入的帳號及電子信箱皆已被其他人使用!";
+        //String emailAndUsernameDuplicatedMessage = "更新失敗，輸入的帳號及電子信箱皆已被其他人使用!";
         String passwordMessage = "至少需要8位密碼，且不超過128位";
         Map<String, String> successResponse = Collections.singletonMap("message", successMessage);
-        Map<String, String> usernameDuplicatedResponse = Collections.singletonMap("message", usernameDuplicatedMessage);
+        Map<String, String> usernameNotAllowedResponse = Collections.singletonMap("message", usernameNotAllowedMessage);
         Map<String, String> emailDuplicatedResponse = Collections.singletonMap("message", emailDuplicatedMessage);
-        Map<String, String> emailAndUsernameDuplicatedResponse = Collections.singletonMap("message", emailAndUsernameDuplicatedMessage);
+        //Map<String, String> emailAndUsernameDuplicatedResponse = Collections.singletonMap("message", emailAndUsernameDuplicatedMessage);
         Map<String, String> passwordResponse = Collections.singletonMap("message", passwordMessage);
         User user = userService.findByUsername(userIdentity.getUsername());
-        user.setEmail(request.getEmail());
-        user.setUsername(request.getUsername());
-        user.setName(request.getName());
+        //user.setEmail(request.getEmail());
+        //user.setUsername(request.getUsername());
+        if(!Objects.equals(request.getUsername(), user.getUsername())){
+            return ResponseEntity.badRequest().body(usernameNotAllowedResponse);
+        }
         if(request.getPassword().length() < 8 || request.getPassword().length() > 128){
             return ResponseEntity.badRequest().body(passwordResponse);
         }
+        if(!userService.isEmailNonExist(request.getEmail()) && !Objects.equals(request.getEmail(), user.getEmail())){
+            return ResponseEntity.badRequest().body(emailDuplicatedResponse);
+        }
+        user.setName(request.getName());
         user.setHashedPassword(userService.getPasswordEncoder().encode(request.getPassword()));
-        if(!userService.isUsernameNonExist(request.getUsername())){
+        /*if(!userService.isUsernameNonExist(request.getUsername())){
             if(!userService.isEmailNonExist(request.getEmail())){
                 return ResponseEntity.badRequest().body(emailAndUsernameDuplicatedResponse);
             }
             return ResponseEntity.badRequest().body(usernameDuplicatedResponse);
-        }
-        if(!userService.isEmailNonExist(request.getEmail())){
-            return ResponseEntity.badRequest().body(emailDuplicatedResponse);
-        }
+        }*/
+        user.setEmail(request.getEmail());
         userService.update(user);
         return ResponseEntity.ok(successResponse);
     }
