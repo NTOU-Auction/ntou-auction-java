@@ -110,7 +110,11 @@ public class OrderController {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         return orderService.orderToOrderWithProductDetail(orderService.findDoneBySellerId(userId));
     }
-
+    @GetMapping("/check/income")
+    List<Long> getIncomeBySeller() {
+        Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
+        return orderService.checkIncome(userId);
+    }
 
     @PostMapping("/create")
     ResponseEntity<Map<String, String>> addOrder(@Valid @RequestBody AddOrderRequest request) {
@@ -146,11 +150,11 @@ public class OrderController {
         // Same seller
         boolean checkSameSeller = orderService.checkIsSameSeller(getrequest);
         if(!checkSameSeller) return ResponseEntity.badRequest().body(tooManySellerMessage);
-
+    /*
         // Self buying
         boolean checkSelfBuying = shoppingcartService.checkIsViolateSelfBuying(getrequest, userId);
         if(checkSelfBuying) return ResponseEntity.badRequest().body(selfBuyingError);
-
+*/
         // order status -> 0: reject, 1: waiting for submit, 2: submitted but not paid, 3: order done
         Order order = new Order();
         order.setBuyerid(userId);
