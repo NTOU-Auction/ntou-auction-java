@@ -4,6 +4,7 @@ import ntou.auction.spring.mail.EmailService;
 import ntou.auction.spring.order.entity.Order;
 import ntou.auction.spring.order.response.OrderWithProductDetail;
 import ntou.auction.spring.order.repository.OrderRepository;
+import ntou.auction.spring.product.entity.Product;
 import ntou.auction.spring.shoppingcart.response.ProductAddAmount;
 import ntou.auction.spring.product.service.ProductService;
 import ntou.auction.spring.shoppingcart.service.ShoppingcartService;
