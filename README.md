@@ -74,7 +74,7 @@ https://ntou-auction.com/
 
 ### Docker 部署
 
-參考 [Docker Hub](https://hub.docker.com/repository/docker/keke125/ntou-auction-java)。
+參考 [Docker Hub](https://hub.docker.com/r/keke125/ntou-auction-java)。
 
 ## 反向代理(Nginx)參考設定檔
 
