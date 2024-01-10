@@ -1,5 +1,7 @@
 package ntou.auction.spring.order.service;
 
+import ntou.auction.spring.account.entity.User;
+import ntou.auction.spring.account.service.UserService;
 import ntou.auction.spring.mail.EmailService;
 import ntou.auction.spring.order.entity.Order;
 import ntou.auction.spring.order.response.OrderWithProductDetail;
@@ -22,15 +24,15 @@ public class OrderService {
 
     private final ProductService productService;
 
-    private final ShoppingcartService shoppingcartService;
+    private final UserService userService;
     private final EmailService emailService;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    public OrderService(OrderRepository repository, ProductService productService, ShoppingcartService shoppingcartService, EmailService emailService) {
+    public OrderService(OrderRepository repository, ProductService productService, UserService userService, EmailService emailService) {
         this.repository = repository;
         this.productService = productService;
-        this.shoppingcartService = shoppingcartService;
+        this.userService = userService;
         this.emailService = emailService;
     }
 
@@ -159,6 +161,10 @@ public class OrderService {
             addOrder.setUpdateTime(order.getUpdateTime());
             addOrder.setStatus(order.getStatus());
             addOrder.setOrderid(order.getId());
+            User buyer = userService.get(order.getBuyerid()).orElse(null);
+            User seller = userService.get(order.getSellerid()).orElse(null);
+            if(buyer!=null) addOrder.setBuyername(buyer.getName());
+            if(seller!=null) addOrder.setSellername(seller.getName());
             List<ProductAddAmount> temp = new ArrayList<>();
             for (List<Long> product : order.getProductAddAmountList()) {
                 temp.add(new ProductAddAmount(productService.getID(product.get(0)), product.get(1)));

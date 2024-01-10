@@ -23,6 +23,12 @@ public class OrderWithProductDetail {
     private Long buyerid;
 
     @NotNull
+    private String buyername;
+
+    @NotNull
+    private String sellername;
+
+    @NotNull
     private Long sellerid;
 
     private List<ProductAddAmount> productAddAmountList = new ArrayList<>();
