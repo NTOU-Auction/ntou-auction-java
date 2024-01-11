@@ -163,8 +163,8 @@ public class OrderService {
             addOrder.setOrderid(order.getId());
             User buyer = userService.get(order.getBuyerid()).orElse(null);
             User seller = userService.get(order.getSellerid()).orElse(null);
-            if(buyer!=null) addOrder.setBuyername(buyer.getName());
-            if(seller!=null) addOrder.setSellername(seller.getName());
+            if(buyer!=null) addOrder.setBuyername(buyer.getUsername());
+            if(seller!=null) addOrder.setSellername(seller.getUsername());
             List<ProductAddAmount> temp = new ArrayList<>();
             for (List<Long> product : order.getProductAddAmountList()) {
                 temp.add(new ProductAddAmount(productService.getID(product.get(0)), product.get(1)));
