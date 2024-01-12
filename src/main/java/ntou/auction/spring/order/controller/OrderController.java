@@ -120,7 +120,11 @@ public class OrderController {
         Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
         return orderService.orderToOrderWithProductDetail(orderService.findDoneBySellerId(userId));
     }
-
+    @GetMapping("/check/income")
+    List<Long> getIncomeBySeller() {
+        Long userId = userService.findByUsername(userIdentity.getUsername()).getId();
+        return orderService.checkIncome(userId);
+    }
 
     @PostMapping("/create")
     ResponseEntity<Map<String, String>> addOrder(@Valid @RequestBody AddOrderRequest request) {
