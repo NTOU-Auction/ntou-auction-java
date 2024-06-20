@@ -4,6 +4,7 @@ import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import ntou.auction.spring.account.request.AuthRequest;
+import ntou.auction.spring.util.AppConfig;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,13 +20,18 @@ public class JWTService {
 
     private static AuthenticationManager authenticationManager;
 
-    public JWTService(AuthenticationManager authenticationManager) {
+    public JWTService(AuthenticationManager authenticationManager, AppConfig appConfig) {
         JWTService.authenticationManager = authenticationManager;
+        if(appConfig.getJWTKey() != null){
+            TOKEN_SECRET = appConfig.getJWTKey();
+        }else{
+            TOKEN_SECRET = "cuAihCz53DZRjZwbsGcZJ2Ai6At+T142uphtJMsk7iQ=";
+        }
     }
 
     // base64 encoded string
     // privateKey
-    private static final String TOKEN_SECRET = "cuAihCz53DZRjZwbsGcZJ2Ai6At+T142uphtJMsk7iQ=";
+    private static String TOKEN_SECRET;
 
     public static SecretKey getSigningKey() {
         byte[] encodeKey = Decoders.BASE64.decode(JWTService.TOKEN_SECRET);
