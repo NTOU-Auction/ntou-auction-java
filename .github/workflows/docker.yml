@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - 'development'
+      - 'main'
+    tags:
+      - 'v*.*.*'
 env:
   NA_DB_URL: 'jdbc:mariadb://localhost:3306/NA'
   NA_DB_USER: 'NA'
