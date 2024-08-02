@@ -23,6 +23,7 @@ public class JWTService {
     public JWTService(AuthenticationManager authenticationManager, AppConfig appConfig) {
         JWTService.authenticationManager = authenticationManager;
         if(appConfig.getJWTKey() != null){
+            System.out.println("Custom JWT Key");
             TOKEN_SECRET = appConfig.getJWTKey();
         }else{
             TOKEN_SECRET = "cuAihCz53DZRjZwbsGcZJ2Ai6At+T142uphtJMsk7iQ=";
