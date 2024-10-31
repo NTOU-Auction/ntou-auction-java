@@ -154,6 +154,9 @@ server {
 
 ![GitHub License](https://img.shields.io/github/license/NTOU-Auction/ntou-auction-java)
 
+## 程式碼行數
+
+![image](https://github.com/user-attachments/assets/a0eba432-9457-4d2f-b509-a6f2b591ba04)
 
 
 
