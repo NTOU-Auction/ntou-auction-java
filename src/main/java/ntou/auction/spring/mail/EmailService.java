@@ -10,6 +10,7 @@ import ntou.auction.spring.util.AppConfig;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -26,6 +27,7 @@ public class EmailService {
         this.appConfig = appConfig;
     }
 
+    @Async
     public void sendMailBidSuccess(Long userId, Product product) {
 
         if (userService.get(userId).isEmpty()) {
@@ -89,6 +91,7 @@ public class EmailService {
         }
     }
     */
+    @Async
     public void sendMailOrderEstablished(Long userId, Order order) {
 
         if (userService.get(userId).isEmpty() || userService.get(order.getSellerid()).isEmpty()) {
@@ -139,6 +142,7 @@ public class EmailService {
         }
     }
 
+    @Async
     public void sendMailOrderUpdate(Long userId, Order order) {
 
         if (userService.get(userId).isEmpty() || userService.get(order.getSellerid()).isEmpty()) {
