@@ -23,13 +23,6 @@ NTOU Auction Java 為專門為海大師生設計的交易平臺，提供不二�
 
 此外，系統以MIT授權條款開放原始碼。
 
-## 網站
-https://ntou-auction.com/
-
-網站託管於Oracle Cloud的日本大阪機房
-
-![Oracle](https://img.shields.io/badge/Oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white)
-
 ## 技術
 
 ### CI/CD
